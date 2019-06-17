@@ -13,9 +13,9 @@
   \code{\link{imom}}
 }
 \examples{
-## estimate implied Hurst exponent
-ih <- ihurst(data = implied_volatilities, maturities)
-summary(ih)
+## estimate implied Hurst exponent FIXME
+## ih <- ihurst(data = implied_volatilities, maturities)
+## summary(ih)
 }
 \keyword{options, volatility}
 
