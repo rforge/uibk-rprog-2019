@@ -54,7 +54,7 @@ ihurst <- function(data, maturities){
   return(ret)
 }
 
-summary.ivol <- function(object){
+summary.ivol <- function(object, ...){
   z <- object
   r2 <- z$r.squared
   r <- z$residuals
@@ -82,19 +82,18 @@ summary.ivol <- function(object){
 
 
 
-plot.ivol <- function(object){
-  z <- object
-  if(z$method == "h_lm"){
+plot.ivol <- function(x, ...){
+  if(x$method == "h_lm"){
     par(mfrow=c(2, 1))
-    plot(z$h, type='l', ylab = "implied Hurst", xlab = "time", ylim=c(0,1))
+    plot(x$h, type='l', ylab = "implied Hurst", xlab = "time", ylim=c(0,1))
     abline(0.5, 0)
-    plot(z$sigma_f, type='l', ylab = "fractal Volatility", xlab = "time", ylim=c(0, max(z$sigma_f)*1.05))
+    plot(x$sigma_f, type='l', ylab = "fractal Volatility", xlab = "time", ylim=c(0, max(x$sigma_f)*1.05))
     par(mfrow=c(1, 1))
   }
 }
 
 
-predict.ivol <- function(object, newdata, horizon){
+predict.ivol <- function(object, newdata, horizon, ...){
   z <- object
   if(missing(horizon) || is.null(horizon)){
     hz <- names(z$last_mdl)
