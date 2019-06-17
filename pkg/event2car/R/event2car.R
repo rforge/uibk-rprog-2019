@@ -27,7 +27,6 @@
 #' @param car_lead an object of class \code{intenger} measuring the end of the event window. The default is 5 days after the event date.
 #' @param market_model market_model a character indicating the market model among
 #' \code{mean_adj}, \code{mrkt_adj}, and \code{sim}.
-#' @param parallel TRUE or FALSE indicating whether the process should be parallized or not. Default is FALSE. This function is not yet implemented.
 #'
 #' @return an object of class \code{data.frame} which contains cumulative abnormal returns, the average cumulative abnormal return
 #' (controls for varying event period durations if non-trading days are in the period), the number of tradingdays,

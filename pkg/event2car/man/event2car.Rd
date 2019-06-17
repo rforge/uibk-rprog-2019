@@ -27,8 +27,6 @@ Note that the event period itself is not included in the event period to prevent
 
 \item{market_model}{market_model a character indicating the market model among
 \code{mean_adj}, \code{mrkt_adj}, and \code{sim}.}
-
-\item{parallel}{TRUE or FALSE indicating whether the process should be parallized or not. Default is FALSE. This function is not yet implemented.}
 }
 \value{
 an object of class \code{data.frame} which contains cumulative abnormal returns, the average cumulative abnormal return
