@@ -5,7 +5,8 @@ Title: Option implied Informations
 Authors@R: person("Wolfgang", "Schadner", role=c("aut", "cre"), email="Wolfgang.Schadner@uibk.ac.at")
 Author: Wolfgang Schadner [aut, cre]
 Maintainer: Wolfgang Schadner <Wolfgang.Schadner@uibk.ac.at>
-Depends: R (>= 3.4.3)
+Depends: R (>= 3.4.0)
+Imports: graphics, stats
 Suggests: xts
 Description: Estimating time-series of risk-neutral momentum or moments out of option implied volatility surfaces.
 License: GPL (>=2)

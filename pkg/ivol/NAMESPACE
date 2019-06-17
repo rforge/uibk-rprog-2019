@@ -1,3 +1,6 @@
+importFrom("graphics", "abline", "par", "plot")
+importFrom("stats", "lm.fit", "quantile", "sd")
+
 export(
   "ihurst",
   "imom"
