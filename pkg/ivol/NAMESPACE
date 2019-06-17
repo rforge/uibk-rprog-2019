@@ -1,0 +1,9 @@
+export(
+  "ihurst",
+  "imom"
+)
+
+## methods for ivol
+S3method("summary", "ivol")
+S3method("predict", "ivol")
+S3method("plot", "ivol")
