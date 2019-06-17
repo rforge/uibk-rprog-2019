@@ -32,21 +32,4 @@
 
 \seealso{\code{\link{htobit}}}
 
-\examples{
-## heteroscedastic tobit model for budget share of alcohol
-data("AlcoholTobacco", package = "htobit")
-AlcoholTobacco$persons <- with(AlcoholTobacco, adults + oldkids + youngkids)
-ma <- htobit(alcohol ~ age + log(expenditure) + persons | age + log(expenditure) + persons,
-  data = AlcoholTobacco)
-
-## extract coefficients
-coef(ma)
-coef(ma, model = "location")
-coef(ma, model = "scale")
-
-## corresponding model matrices
-head(model.matrix(ma, model = "location"))
-head(model.matrix(ma, model = "scale"))
-}
-
 \keyword{regression}

@@ -51,30 +51,5 @@
 
 \seealso{\code{\link{htobit}}}
 
-\examples{
-## heteroscedastic tobit model for budget share of alcohol
-data("AlcoholTobacco", package = "htobit")
-AlcoholTobacco$persons <- with(AlcoholTobacco, adults + oldkids + youngkids)
-ma <- htobit(alcohol ~ age + log(expenditure) + persons | age + log(expenditure) + persons,
-  data = AlcoholTobacco)
-
-## by default predict() and fitted() return the fitted latent means on the observed sample
-head(fitted(ma))
-head(predict(ma))
-
-## new data with fixed age and persons (at median) and varying expenditure (over observed range)
-nd <- data.frame(age = 2, persons = 2, expenditure = exp(12:15))
-
-## latent Gaussian location and scale (or both)
-predict(ma, newdata = nd, type = "location")
-predict(ma, newdata = nd, type = "scale")
-predict(ma, newdata = nd, type = "parameter")
-
-## median
-predict(ma, newdata = nd, type = "quantile", at = 0.5)
-
-## probability of zero boundary
-predict(ma, newdata = nd, type = "probability", at = 0)
-}
 
 \keyword{regression}

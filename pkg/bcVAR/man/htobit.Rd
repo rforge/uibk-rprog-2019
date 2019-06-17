@@ -141,28 +141,5 @@ htobit_control(maxit = 5000, start = NULL, grad = TRUE, hessian = TRUE, ...)
 
 \seealso{\code{\link[crch]{crch}}, \code{\link{predict.htobit}}, \code{\link{coef.htobit}}}
 
-\examples{
-## data on alcohol and tobacco expenditures in Belgian households
-data("AlcoholTobacco", package = "htobit")
-AlcoholTobacco$persons <- with(AlcoholTobacco, adults + oldkids + youngkids)
-
-## homoscedastic vs. heteroscedastic tobit model for budget share of alcohol
-m0 <- htobit(alcohol ~ age + log(expenditure) + persons, data = AlcoholTobacco)
-m1 <- update(m0, . ~ . | age + log(expenditure) + persons)
-
-## comparison of the two models
-AIC(m0, m1)
-BIC(m0, m1)
-if(require("lmtest")) {
-lrtest(m0, m1)
-}
-
-## comparison with crch
-if(require("crch")) {
-c1 <- crch(alcohol ~ age + log(expenditure) + persons | age + log(expenditure) + persons,
-  data = AlcoholTobacco, left = 0)
-cbind(coef(m1), coef(c1))
-}
-}
 
 \keyword{regression}
