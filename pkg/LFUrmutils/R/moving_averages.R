@@ -152,6 +152,7 @@ EWMAmult <- function(returns, lambda = 0.94, center = FALSE){
 
 
 
+if(FALSE) {
 ##################################################################
 
 library(tseries)
@@ -239,3 +240,4 @@ tail(res_ewma)
 plot(res_ewma)
 
 ##################################################################
+}

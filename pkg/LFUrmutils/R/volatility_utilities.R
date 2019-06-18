@@ -117,7 +117,7 @@ residuals.ewma <- function(x) {
 }
 
 
-ewmaRM_res <- SPret/sqrt(ewmaRM)
+## ewmaRM_res <- SPret/sqrt(ewmaRM)
 
 
 # Annualized volatilities

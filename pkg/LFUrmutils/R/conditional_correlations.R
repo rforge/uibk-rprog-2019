@@ -40,9 +40,8 @@ ccorr.MultiEWMA <- function(object, diagonal = TRUE, duplicates = TRUE){
   
 }
 
-corr_ewma <- ccorr(ewma, diagonal = FALSE, duplicates = FALSE)
-
-plot(corr_ewma)
+## corr_ewma <- ccorr(ewma, diagonal = FALSE, duplicates = FALSE)
+## plot(corr_ewma)
 
 ## OGARCH model ----
 
