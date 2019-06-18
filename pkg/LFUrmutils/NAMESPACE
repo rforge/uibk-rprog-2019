@@ -10,11 +10,11 @@ export(
 )
 
 ## methods for UniEWMA
-S3method("coef", "UniEWMA")
+## S3method("coef", "UniEWMA")
 S3method("residuals", "UniEWMA")
-S3method("print", "UniEWMA")
+## S3method("print", "UniEWMA")
 
 ## methods for MultiEWMA
-S3method("coef", "MultiEWMA")
+## S3method("coef", "MultiEWMA")
 S3method("residuals", "MultiEWMA")
-S3method("print", "MultiEWMA")
+## S3method("print", "MultiEWMA")
