@@ -1,4 +1,4 @@
-#' get_car_events: Calculates \code{CAR} (cumulative abnormal returns) for firm(s) and event(s)
+#' event2car: Calculates \code{CAR} (cumulative abnormal returns) for firm(s) and event(s)
 #'
 #' The function applies the following steps to securities' rates of returns: A)
 #' calculate abnormal returns for \code{estimation_period}(s), B) predict
