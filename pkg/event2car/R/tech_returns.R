@@ -6,11 +6,11 @@
 #'
 #' @docType data
 #'
-#' @usage data(tech_returns)
+#' @usage data("tech_returns", package="estudy2car")
 #'
 #' @keywords datasets
 #'
-#' @format An objects of class \code{zoo}.
+#' @format An objects of class \code{zoo} containing 503 observations and 19 variables.
 #' \describe{
 #'   \item{^NDX}{NASDAQ return  from 2015-11-09 to 2017-11-08.}
 #'   \item{MSFT}{Microsoft's from 2015-11-09 to 2017-11-08.}
