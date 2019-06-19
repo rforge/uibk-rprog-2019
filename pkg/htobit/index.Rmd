@@ -1,0 +1,36 @@
+## Heteroscedastic Tobit Regression
+
+Gaussian regression models with a response variable left-censored at zero
+and both distribution parameters (the latent location $\mu_i$ and scale $\sigma_i$)
+can depend on covariates, e.g.,
+
+$y_i^* \sim \mathcal{N}(\mu_i = 0.0 + 1.0 \cdot x_i, \sigma_i = \exp(0.0 - 1.0 \cdot x_i))$
+
+$y_i = \max(0, y_i^*)$
+
+```{r htobit, echo = FALSE, fig.width = 6.5, fig.height = 5}
+set.seed(0)
+d <- data.frame(x = sort(runif(80, -1, 1)))
+d$mu <- 0 + 1 * d$x
+d$sigma <- exp(0 - 1 * d$x)
+d$ystar <- rnorm(80, mean = d$mu, sd = d$sigma)
+d$y <- pmax(0, d$ystar)
+
+library("htobit")
+m_ols <- lm(y ~ x, data = d)
+m_htobit <- htobit(y ~ x | x, data = d)
+
+par(mar = c(3, 3, 0.5, 0.5))
+plot(0, 0, type = "n", xlab = "x", ylab = "y / y*", xlim = c(-1, 1), ylim = c(-4, 4))
+abline(h = 0, lwd = 1.5, col = "darkgray")
+points(y ~ x, data = d, pch = 21, col = "black", bg = "darkgray")
+points(ystar ~ x, data = d, subset = ystar < 0, col = "darkgray")
+lines(mu ~ x, data = d, lwd = 2)
+lines(mu + qnorm(0.95) * sigma ~ x, data = d, lwd = 2, lty = 2)
+lines(fitted(m_ols) ~ x, data = d, col = 2, lwd = 2)
+lines(fitted(m_htobit) ~ x, data = d, col = 4, lwd = 2)
+lines(predict(m_htobit, type = "quantile", at = 0.95) ~ x, data = d, col = 4, lwd = 2, lty = 2)
+legend("bottomright", c("y* mean", "y* 95% quantile", "lm", "htobit"), lwd = 2, lty = c(1, 2, 1, 1), col = c(1, 1, 2, 4), bty = "n")
+```
+
+

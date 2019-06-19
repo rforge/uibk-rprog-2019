@@ -1,7 +1,7 @@
 ---
 title: "Heteroscedastic Tobit Regression"
 author: "[Achim Zeileis](https://eeecon.uibk.ac.at/~zeileis/)"
-date: 2017-06-13
+date: 2019-06-19
 output: rmarkdown::html_vignette
 bibliography: htobit.bib
 vignette: >
@@ -18,11 +18,12 @@ library("car")
 library("crch")
 library("lmtest")
 library("memisc")
+library("sandwich")
 ```
 
 # Introduction
 
-The [`htobit`](https://R-Forge.R-project.org/projects/uibk-rprog-2017/) package
+The [`htobit`](https://uibk-rprog-2019.R-Forge.R-project.org/htobit/) package
 fits tobit regression models with conditional heteroscedasticy using maximum
 likelihood estimation. The model assumes an underlying latent Gaussian variable
 

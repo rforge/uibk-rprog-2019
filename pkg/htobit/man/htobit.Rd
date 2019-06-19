@@ -136,7 +136,7 @@ htobit_control(maxit = 5000, start = NULL, grad = TRUE, hessian = TRUE, ...)
   Messner JW, Mayr GJ, Zeileis A (2016). Heteroscedastic Censored and
     Truncated Regression with crch.
     \emph{The R Journal}, \bold{8}(1), 173--181.
-    \url{https://journal.R-project.org/archive/2016-1/messner-mayr-zeileis.pdf}.
+    \doi{10.32614/RJ-2016-012}.
 }
 
 \seealso{\code{\link[crch]{crch}}, \code{\link{predict.htobit}}, \code{\link{coef.htobit}}}

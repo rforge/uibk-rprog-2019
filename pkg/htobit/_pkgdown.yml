@@ -1,0 +1,31 @@
+destination: "../../www/htobit/"
+
+navbar:
+  left:
+    - text: "Get started"
+      href: articles/htobit-md.html
+    - text: "Reference"
+      href: reference/index.html
+    - text: "Changelog"
+      href: news/index.html
+    - text: "Contact"
+      href: contact.html
+
+reference:
+  - title: "Models"
+    contents: 
+      - htobit
+      - htobit_fit
+      - htobit_control
+  - title: "Methods"
+    contents: 
+      - coef.htobit
+      - vcov.htobit
+      - terms.htobit
+      - model.matrix.htobit
+      - predict.htobit
+      - fitted.htobit
+      - residuals.htobit
+  - title: "Data"
+    contents: 
+      - AlcoholTobacco
