@@ -9,6 +9,7 @@ export(
 )
 
 ## methods for htobit
+S3method("bread", "htobit")
 S3method("coef", "htobit")
 S3method("estfun", "htobit")
 S3method("fitted", "htobit")

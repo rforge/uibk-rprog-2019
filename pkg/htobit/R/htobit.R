@@ -295,6 +295,8 @@ predict.htobit <- function(object, newdata = NULL,
   return(rval)
 }
 
+bread.htobit <- function(x, ...) x$vcov * x$nobs
+
 estfun.htobit <- function(x, ...)
 {
   ## observed data and fit
