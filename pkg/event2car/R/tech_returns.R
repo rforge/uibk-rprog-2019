@@ -1,7 +1,7 @@
 #' The Trump election and stock returns of 18 US tech firms.
 #'
-#' Datset containing stock returns of 18 important US tech firms (See \url{https://finance.yahoo.com/u/yahoo-finance/watchlists/tech-stocks-that-move-the-market/}),
-#' the NASDAQ return.
+#' Datset containing stock returns of 18 important US tech firms (See \link[Yahoo Finance]{https://finance.yahoo.com/u/yahoo-finance/watchlists/tech-stocks-that-move-the-market/})
+#' and the NASDAQ return.
 #' The dataset covers trading days between 2015-11-09 and 2017-11-08. This results in 503 trading days.
 #'
 #' @docType data
@@ -33,7 +33,7 @@
 #'   \item{TIVO}{TiVo's from 2015-11-09 to 2017-11-08.}
 #'   ...
 #' }
-#' @source \url{https://finance.yahoo.com/}
+#' @source \link[Yahoo Finance]{{https://finance.yahoo.com/}
 #'
 #' @examples
 #' data('tech_returns')
