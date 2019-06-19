@@ -1,4 +1,4 @@
-#' The Trump election and stock returns of 18 US tech firms.
+#' Stock returns of 18 US tech companies
 #'
 #' Datset containing stock returns of 18 important US tech firms (See \link[Yahoo Finance]{https://finance.yahoo.com/u/yahoo-finance/watchlists/tech-stocks-that-move-the-market/})
 #' and the NASDAQ return.
