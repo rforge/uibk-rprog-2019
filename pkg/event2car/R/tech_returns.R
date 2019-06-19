@@ -33,7 +33,7 @@
 #'   \item{TIVO}{TiVo's from 2015-11-09 to 2017-11-08.}
 #'   ...
 #' }
-#' @source \href{{https://finance.yahoo.com/}{Yahoo Finance}
+#' @source \href{https://finance.yahoo.com/}{Yahoo Finance}
 #'
 #' @examples
 #' data('tech_returns')
