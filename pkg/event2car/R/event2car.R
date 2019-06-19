@@ -41,6 +41,7 @@
 #' European Economic Review, 110:1-17, 2018.
 #' @importFrom plyr ldply
 #' @importFrom zoo index merge.zoo coredata
+#' @importFrom stats na.omit time
 #' 
 #' @examples
 #' data('tech_returns')
