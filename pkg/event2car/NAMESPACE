@@ -2,6 +2,8 @@
 
 export(event2car)
 importFrom(plyr,ldply)
+importFrom(stats,na.omit)
+importFrom(stats,time)
 importFrom(zoo,coredata)
 importFrom(zoo,index)
 importFrom(zoo,merge.zoo)
