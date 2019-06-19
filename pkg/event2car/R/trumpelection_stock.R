@@ -22,13 +22,14 @@
 #'
 #' #' @examples
 #' # load data
-#' data('trumpelection_stock')
+#' data('tech_returns')
 #' # mean adjusted model
+#' trumpelection <- as.Date("2016-11-08")
 #' event2car(returns=returns_firms,regressor=return_indx,event_dates =trumpelection,market_model="mean_adj" )
 #' # market adjusted model (out-of sample estimation)
 #' event2car(returns=returns_firms,regressor=return_indx,event_dates =trumpelection,market_model="mrkt_adj" )
 #' # market adjusted model (within sample estimation)
 #' event2car(returns=returns_firms,regressor=return_indx,event_dates =trumpelection,market_model="mrkt_adj_within" )
 
-NULL
+"tech_returns"
 
