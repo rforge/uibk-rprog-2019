@@ -1,20 +1,36 @@
 import("stats")
 
 export(
-  "MovingAverage", 
-  "EWMA", 
-  "EWMAmult", 
+  "UnivVola", 
+  "MultiEWMA", 
+  "ccor",
+  "ccor.MultiEWMA", 
+  "mse", 
+  "mse.UnivVola", 
+  "mse.fGARCH", 
+  "mse.MultiEWMA", 
+  "residuals.MultiEWMA", 
+  "residuals.UnivVola", 
+  "vola", 
+  "vola.UnivVola", 
+  "vola.fGARCH", 
+  "vola.MultiEWMA", 
   "NextBusinessDay", 
-  "matrix.sqrt", 
-  "matrix.sqrt.inv"
+  "matrix.sqrt*", 
+  "matrix.sqrt.inv*"
 )
 
-## methods for UniEWMA
-## S3method("coef", "UniEWMA")
-S3method("residuals", "UniEWMA")
-## S3method("print", "UniEWMA")
+## methods for UnivVola
+S3method("mse", "UnivVola")
+S3method("residuals", "UnivVola")
+S3method("vola", "UnivVola")
 
 ## methods for MultiEWMA
-## S3method("coef", "MultiEWMA")
+S3method("ccor", "MultiEWMA")
+S3method("mse", "MultiEWMA")
 S3method("residuals", "MultiEWMA")
-## S3method("print", "MultiEWMA")
+S3method("vola", "MultiEWMA")
+
+## methods for fGARCH
+S3method("mse", "fGARCH")
+S3method("vola", "fGARCH")
