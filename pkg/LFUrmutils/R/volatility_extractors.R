@@ -14,13 +14,13 @@ vola <- function(object, ...){
 # }
 
 ## Univariate volatility models ----
-vola.UnivVola <- function(object){
+vola.UnivVola <- function(object, ...){
   sig <- sqrt(object$Variance)
   return(sig)
 }
 
 ## fGARCH model ----
-vola.fGARCH <- function(object){
+vola.fGARCH <- function(object, ...){
   sig <- zoo(x = object@sigma.t, 
              order.by = as.Date(attr(object@data, "names")))
   return(sig)
@@ -28,7 +28,7 @@ vola.fGARCH <- function(object){
 
 
 ## Multivariate EWMA model ----
-vola.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE){
+vola.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE, ...){
   
   sig <- object$Variances
   colnames(sig) <- sub("Sigma", "Volatility", colnames(sig))

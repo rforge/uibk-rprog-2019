@@ -3,7 +3,7 @@
 ## ## ## ##
 
 ## Univariate volatility models ----
-residuals.UnivVola <- function(object, standardize = TRUE, na.action = "na.pass"){
+residuals.UnivVola <- function(object, standardize = TRUE, na.action = "na.pass", ...){
   if (standardize == TRUE) {
     merged <- merge(object$Returns, sqrt(object$Variance))
     if(na.action == "na.trim"){
@@ -18,7 +18,7 @@ residuals.UnivVola <- function(object, standardize = TRUE, na.action = "na.pass"
 }
 
 ## Multivariate EWMA model ----
-residuals.MultiEWMA <- function(object, standardize = TRUE, na.action = "na.pass"){
+residuals.MultiEWMA <- function(object, standardize = TRUE, na.action = "na.pass", ...){
   if (standardize == TRUE) {
     n <- dim(object$Variances)[1]
     c <- sqrt(dim(object$Variances)[2])

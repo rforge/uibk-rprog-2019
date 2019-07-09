@@ -1,23 +1,27 @@
-import("stats")
+import(
+  "stats", 
+  "tseries", 
+  "zoo")
 
 export(
   "UnivVola", 
   "MultiEWMA", 
   "ccor",
   "ccor.MultiEWMA", 
+  "lrtest.fGARCH", 
   "mse", 
   "mse.UnivVola", 
   "mse.fGARCH", 
   "mse.MultiEWMA", 
   "residuals.MultiEWMA", 
   "residuals.UnivVola", 
+  "varcov", 
+  "varcov.MultiEWMA", 
   "vola", 
   "vola.UnivVola", 
   "vola.fGARCH", 
   "vola.MultiEWMA", 
-  "NextBusinessDay", 
-  "matrix.sqrt*", 
-  "matrix.sqrt.inv*"
+  "NextBusinessDay" 
 )
 
 ## methods for UnivVola
@@ -29,8 +33,10 @@ S3method("vola", "UnivVola")
 S3method("ccor", "MultiEWMA")
 S3method("mse", "MultiEWMA")
 S3method("residuals", "MultiEWMA")
+S3method("varcov", "MultiEWMA")
 S3method("vola", "MultiEWMA")
 
 ## methods for fGARCH
 S3method("mse", "fGARCH")
 S3method("vola", "fGARCH")
+S3method("lrtest", "fGARCH")

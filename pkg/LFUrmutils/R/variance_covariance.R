@@ -14,38 +14,38 @@ varcov <- function(object, ...){
 # }
 
 ## Multivariate EWMA model ----
-varcov.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE){
+varcov.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE, ...){
   # Extract variance-covariance matrix
-  varcov <- object$Variances
+  VarCov <- object$Variances
   timestamps <- index(object$Variances)
 
   # Delete off-diagonal elements if not necessary
   if(offdiagonal == FALSE){
-    n <- dim(varcov)[1]
-    c <- sqrt(dim(varcov)[2])
+    n <- dim(VarCov)[1]
+    c <- sqrt(dim(VarCov)[2])
     diago <- matrix(NA, nrow = n, ncol = c)
     for (k in 1:c){
       # Keep only diagonal elements
-      diago[, k] <- varcov[, grep(paste0(k,k), colnames(varcov))]
+      diago[, k] <- VarCov[, grep(paste0(k,k), colnames(VarCov))]
     }
-    varcov <- diago
-    varcov <- zoo(varcov, timestamps)
+    VarCov <- diago
+    VarCov <- zoo(VarCov, timestamps)
     
     # Update names
     names <- matrix(NA, nrow = c, ncol = 1)
     for(k in 1:c){
       names[k, ] <- paste0("Sigma", k,k)
     }
-    colnames(varcov) <- names
+    colnames(VarCov) <- names
   }
   
   # Delete duplicate columns
   if(offdiagonal == TRUE){
     if(duplicates == FALSE){
-      corematrix <- matrix(coredata(varcov), nrow = dim(varcov)[1], ncol = dim(varcov)[2])
+      corematrix <- matrix(coredata(VarCov), nrow = dim(VarCov)[1], ncol = dim(VarCov)[2])
       duplicate <- duplicated(round(t(corematrix), 10))
-      varcov <- varcov[, !duplicate]
-      # varcov <- zoo(varcov, timestamps)
+      VarCov <- VarCov[, !duplicate]
+      # VarCov <- zoo(VarCov, timestamps)
     }
   }
   
@@ -53,7 +53,7 @@ varcov.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE){
     message("Note that there are no offdiagonal elements. Hence, argument \"duplicates\" is ignored.")
   }
   
-  return(varcov)
+  return(VarCov)
 }
 
 

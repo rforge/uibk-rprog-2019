@@ -15,7 +15,7 @@ mse <- function(object, ...){
 
 
 ## Univariate volatility models ----
-mse.UnivVola <- function(object){
+mse.UnivVola <- function(object, ...){
   merg <- merge(object$Variance, object$Returns)
   merg <- na.trim(merg)
   mse <- mean((merg[, 2]^2 - merg[, 1])^2)
@@ -24,7 +24,7 @@ mse.UnivVola <- function(object){
 
 
 ## fGARCH model ----
-mse.fGARCH <- function(object){
+mse.fGARCH <- function(object, ...){
   # Extract dates, variance and returns
   timestamps <- as.Date(attr(object@data, "names"))
   sigSQ <- zoo(x = object@h.t, order.by = timestamps)
@@ -43,7 +43,7 @@ mse.fGARCH <- function(object){
 
 
 # Multivariate EWMA model
-mse.MultiEWMA <- function(object){
+mse.MultiEWMA <- function(object, ...){
     n <- dim(object$Variances)[1]
     c <- sqrt(dim(object$Variances)[2])
     

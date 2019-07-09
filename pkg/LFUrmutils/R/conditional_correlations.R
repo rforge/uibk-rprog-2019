@@ -15,7 +15,7 @@ ccor <- function(object, ...){
 
 
 ## Multivariate EWMA model ----
-ccor.MultiEWMA <- function(object, diagonal = TRUE, duplicates = TRUE){
+ccor.MultiEWMA <- function(object, diagonal = TRUE, duplicates = TRUE, ...){
   
   # Initialize output object
   correlations <- object$Variances

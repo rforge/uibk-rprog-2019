@@ -149,7 +149,7 @@ MultiEWMA <- function(returns, lambda = 0.94, center = FALSE){
   SIGMA_t <- zoo(SIGMA_t, index(returns))
   
   # Create new index
-  NBD <- NextBusinessDay(y)
+  NBD <- NextBusinessDay(returns)
   newrow <- zoo(NA, NBD)
   newindex <- rbind(returns[, 1], newrow)
   SIGMA_t <- zoo(SIGMA_t, index(newindex))
