@@ -153,8 +153,9 @@ MultiEWMA <- function(returns, lambda = 0.94, center = FALSE){
   newrow <- zoo(NA, NBD)
   newindex <- rbind(returns[, 1], newrow)
   SIGMA_t <- zoo(SIGMA_t, index(newindex))
+  x <- zoo(x, index(returns))
   
-  object <- list(Variances = SIGMA_t, Returns = returns, lambda = lambda, centered = center)
+  object <- list(Variances = SIGMA_t, Returns = x, lambda = lambda, centered = center)
 
   attr(object, "class") <- "MultiEWMA"
   return(object)

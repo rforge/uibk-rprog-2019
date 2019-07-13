@@ -21,28 +21,29 @@ residuals.UnivVola <- function(object, standardize = TRUE, na.action = "na.pass"
 residuals.MultiEWMA <- function(object, standardize = TRUE, na.action = "na.pass", ...){
   if (standardize == TRUE) {
     n <- dim(object$Variances)[1]
-    c <- sqrt(dim(object$Variances)[2])
+    cols <- sqrt(dim(object$Variances)[2])
     
     # Compute relevant standard deviations
-    StdDev <- matrix(NA, nrow = n, ncol = c)
-    for (k in 1:c) {
+    StdDev <- matrix(NA, nrow = n, ncol = cols)
+    for (k in 1:cols) {
       StdDev[, k] <- object$Variances[, grep( paste0(k,k), colnames(object$Variances) )]
       StdDev[, k] <- sqrt(StdDev[, k])
     }
     StdDev <- zoo(StdDev, index(object$Variances))
+    # browser()
     
     # Compute residuals
-    resids <- matrix(NA, nrow = n, ncol = c)
-    for (k in 1:c) {
-      merged <- merge(object$Returns[, k], StdDev[, k])
-      resids[, k] <- merged[, 1]/merged[, 2]
+    resids <- matrix(NA, nrow = n, ncol = cols)
+    for (k in 1:cols) {
+      merged <- merge(object$Returns[, k], StdDev[, k], fill = NA)
+      resids[, k] <- merged[, 1] / merged[, 2]
     }
     resids <- zoo(resids, index(object$Variances))
     if (na.action == "na.trim"){
       resids <- na.trim(resids)
     }
     colnames(resids) <- colnames(object$Returns)
-  } else {
+  } else { # end if(standardize == TRUE)
     message("Note that non-standardized residuals simply correspond to the orginial returns.")
     resids <- object$Returns
   }
