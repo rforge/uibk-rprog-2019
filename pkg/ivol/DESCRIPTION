@@ -7,8 +7,12 @@ Author: Wolfgang Schadner [aut, cre]
 Maintainer: Wolfgang Schadner <Wolfgang.Schadner@uibk.ac.at>
 Depends: R (>= 3.4.0)
 Imports: graphics, stats
-Suggests: xts
+Suggests: 
+    xts,
+    knitr,
+    rmarkdown
 Description: Estimating time-series of risk-neutral momentum or moments out of option implied volatility surfaces.
 License: GPL (>=2)
 URL: https://www.r-project.org
 BugReports: https://ivol.bugtracker.com
+VignetteBuilder: knitr
