@@ -1,0 +1,57 @@
+---
+title: "ivol: Decomposing Implied Volatilites"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ivol}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This package can be used upon financial data to estimate time-series of risk-neutral information embedded in option implied volatilities for underlying investment vehicles such as stocks, equity-indices or other financial assets which's stochastics can be described by Brownian motion. Generally, option implied volatilities can be decomposed over two different perspectives: 
+
+1. over degrees of moneyness <font size="1"> (= different strike levels)</font> ; `imom`
+    
+2. over their time-to-maturity <font size="1"> (= term structure of volatility)</font>; `ihurst` 
+  
+A decomposition over moneyness allows to observe higher risk-neutral moments like investor expectations on skewness and kurtosis (see e.g. Jarrow and Rudd [1982]). In difference, an analysis of the implied volatility term structure allows to examine auto-correlation expectations, which can be interpreted as risk-neutral momentum in returns.  
+
+## imom
+
+Applied on implied volatilities, the function `imom` runs a quadratic regression from Gram-Chalier expansion (see Jarrow-Rudd [1982]), to estimate risk-neutral 2$^\text{nd}$ (volatility), 3$^\text{rd}$ (skewness) and 4$^\text{th}$ (kurtosis) moments. The equation is given as:
+\begin{equation}
+  \frac{\sigma(d)}{\sigma_{ATM}}=\hat{\alpha} + \hat{\beta}_0 \, \frac{d}{3!} + \hat{\beta}_1 \, \frac{d^2}{4!}, \qquad d = \frac{\ln K/S}{\sigma \, \sqrt{\tau}}
+\end{equation}
+with $K$ as the underlying price, $S$ as the option's strike level and $\sigma$ as the respective implied volatility. Consequently, $d$ captures the degree of moneyness and all volatilities are normalized by the at-the-money[^1] value on the left-hand side of the equation. The non-normality adjusted risk-neutral volatility is then represented by the regression's coefficient $\hat{\alpha}$, the 3$^\text{rd}$ moment by $\hat{\beta}_0$ and $\hat{\beta}_1$ estimates the 4$^\text{th}$ moment.
+
+If the input data is in form of a time-series, the function runs the regression in the same frequency as the input data and returns the respective time-series of implied moments.
+
+
+[^1]: Options that are arbitrarily close to at-the-money face symmetric Put and Call prices. 
+
+#### *Example*
+
+```{r setup}
+# library(ivol)
+```
+
+
+## ihurst
+
+Fractal option pricing (cp. Hu and Oksendal [2003]) allows to decompose an underlying's option implied volatility term structure into its fractal (un-autocorrelated) volatility $\sigma_f$ and into the implied Hurst exponent $H$, measuring persistence expectations in returns. 
+
+#### *Example*
+
+
+
+## References
+Jarrow and Rudd [1982], 
+
+Hu and Oksendal [2003], 
+
