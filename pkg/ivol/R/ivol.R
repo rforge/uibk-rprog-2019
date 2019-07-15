@@ -14,7 +14,6 @@ imom <- function(data, use_names=TRUE, moneyness){
     m <- mean(y)
     r2[i] <- sum((f - m)^2) / sum((y -m)^2)
     mom[i,] <- mdl$coefficients
-    # hier kann evt runtime verbessert werden:
     r <- c(r, mdl$residuals)
   }
   ret$r.squared <- r2
