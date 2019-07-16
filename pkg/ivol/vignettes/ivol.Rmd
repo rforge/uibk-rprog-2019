@@ -44,7 +44,16 @@ If the input data is in form of a time-series, the function runs the regression 
 
 ## ihurst
 
-Fractal option pricing (cp. Hu and Oksendal [2003]) allows to decompose an underlying's option implied volatility term structure into its fractal (un-autocorrelated) volatility $\sigma_f$ and into the implied Hurst exponent $H$, measuring persistence expectations in returns. 
+Fractal option pricing (cp. Hu and Oksendal [2003]) allows to decompose an underlying's option implied volatility term structure into its fractal (un-autocorrelated) volatility $\sigma_f$ and into the implied Hurst exponent $H$, measuring persistence expectations in returns. Both components can be estimated by fitting OLS regression on the log-volatility curve:
+\begin{equation}
+  \ln \sigma(\tau) = \hat{\alpha} + \hat{\beta} \, \ln \tau
+\end{equation}
+having 
+\begin{equation}
+  \hat{\alpha} = \exp{\sigma_f} \quad \text{and} \quad \hat{\beta} = H-0.5
+\end{equation}
+
+with $\sigma_f$ as the fractal volatility and $H$ as the implied Hurst exponent.
 
 #### *Example*
 

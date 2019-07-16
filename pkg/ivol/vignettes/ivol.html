@@ -325,7 +325,12 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="ihurst" class="section level2">
 <h2>ihurst</h2>
-<p>Fractal option pricing (cp. Hu and Oksendal [2003]) allows to decompose an underlying’s option implied volatility term structure into its fractal (un-autocorrelated) volatility <span class="math inline">\(\sigma_f\)</span> and into the implied Hurst exponent <span class="math inline">\(H\)</span>, measuring persistence expectations in returns.</p>
+<p>Fractal option pricing (cp. Hu and Oksendal [2003]) allows to decompose an underlying’s option implied volatility term structure into its fractal (un-autocorrelated) volatility <span class="math inline">\(\sigma_f\)</span> and into the implied Hurst exponent <span class="math inline">\(H\)</span>, measuring persistence expectations in returns. Both components can be estimated by fitting OLS regression on the log-volatility curve: <span class="math display">\[\begin{equation}
+  \ln \sigma(\tau) = \hat{\alpha} + \hat{\beta} \, \ln \tau
+\end{equation}\]</span> having <span class="math display">\[\begin{equation}
+  \hat{\alpha} = \exp{\sigma_f} \quad \text{and} \quad \hat{\beta} = H-0.5
+\end{equation}\]</span></p>
+<p>with <span class="math inline">\(\sigma_f\)</span> as the fractal volatility and <span class="math inline">\(H\)</span> as the implied Hurst exponent.</p>
 <div id="example-1" class="section level4">
 <h4><em>Example</em></h4>
 </div>
