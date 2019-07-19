@@ -28,7 +28,7 @@ vola.fGARCH <- function(object, ...){
 
 
 ## Multivariate EWMA model ----
-vola.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE, ...){
+vola.MultiEWMA <- function(object, offdiagonal = FALSE, duplicates = FALSE, ...){
   
   sig <- object$Variances
   colnames(sig) <- sub("Sigma", "Volatility", colnames(sig))

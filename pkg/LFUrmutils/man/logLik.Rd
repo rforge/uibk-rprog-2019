@@ -1,27 +1,25 @@
-\name{mse}
-\alias{mse}
-\alias{mse.UnivVola}
-\alias{mse.MultiEWMA}
-\alias{mse.fGARCH}
-%- Also NEED an '\alias' for EACH other topic documented here.
+\name{logLik}
+\alias{logLik}
+\alias{logLik.UnivVola}
+\alias{logLik.MultiEWMA}
+\alias{logLik.fGARCH}
 \title{
-Mean Squared Error
+Extract Log-Likelihood
 }
 \description{
-Computes the mean squared error for various models.
+These functions are based on the generic \code{logLik} method for objects of classes \code{UnivVola}, \code{MultiEWMA}, and \code{fGARCH}.
 }
 \usage{
-mse(object, ...)
-\method{mse}{UnivVola}(object, ...)
-\method{mse}{MultiEWMA}(object, ...)
-\method{mse}{fGARCH}(object, ...)
+\method{logLik}{UnivVola}(object, ...)
+\method{logLik}{MultiEWMA}(object, ...)
+\method{logLik}{fGARCH}(object, ...)
 }
 \arguments{
   \item{object}{An object of class \code{UnivVola}, \code{MultiEWMA} or \code{fGARCH}.}
   \item{...}{Arguments passed to methods (unused at the moment).}
 }
 \value{
-MSE of the corresponding model.
+Returns an object of class \code{logLik}.
 }
 \seealso{
 \code{\link{UnivVola}}, \code{\link{MultiEWMA}}, \code{\link[fGarch:garchFit]{garchFit}}, \code{\link[fGarch:fGARCH-class]{fGARCH-class}}
@@ -38,8 +36,11 @@ data("CRSPday_zoo")
 y <- CRSPday_zoo
 
 # Compute univariate volatility model
-ma <- UnivVola(y[, 1], type = "MovingAverage", center = TRUE)
+RM <- UnivVola(y[, 1], type = "RiskMetrics", lambda = -1, center = TRUE)
 
-# Compute MSE
-mse(ma)
+# Extract log likelihood
+logLik(RM)
+
+# Compute AIC
+AIC(RM)
 }

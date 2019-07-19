@@ -1,42 +1,42 @@
 import(
+  "graphics", 
   "stats", 
-  "tseries", 
   "zoo")
+
+importFrom("utils", "menu")
+importFrom("RQuantLib", "isHoliday")
+importFrom("grDevices", "n2mfrow")
 
 export(
   "UnivVola", 
   "MultiEWMA", 
   "ccor",
-  "ccor.MultiEWMA", 
-  "lrtest.fGARCH", 
   "mse", 
-  "mse.UnivVola", 
-  "mse.fGARCH", 
-  "mse.MultiEWMA", 
-  "residuals.MultiEWMA", 
-  "residuals.UnivVola", 
   "varcov", 
-  "varcov.MultiEWMA", 
   "vola", 
-  "vola.UnivVola", 
-  "vola.fGARCH", 
-  "vola.MultiEWMA", 
   "NextBusinessDay" 
 )
 
 ## methods for UnivVola
+S3method("fitted", "UnivVola")
+S3method("logLik", "UnivVola")
 S3method("mse", "UnivVola")
+S3method("plot", "UnivVola")
 S3method("residuals", "UnivVola")
 S3method("vola", "UnivVola")
 
 ## methods for MultiEWMA
 S3method("ccor", "MultiEWMA")
+S3method("fitted", "MultiEWMA")
+S3method("logLik", "MultiEWMA")
 S3method("mse", "MultiEWMA")
 S3method("residuals", "MultiEWMA")
 S3method("varcov", "MultiEWMA")
 S3method("vola", "MultiEWMA")
 
 ## methods for fGARCH
+S3method("logLik", "fGARCH")
 S3method("mse", "fGARCH")
 S3method("vola", "fGARCH")
-S3method("lrtest", "fGARCH")
+S3method("logLik", "fGARCH")
+S3method("$", "fGARCH")

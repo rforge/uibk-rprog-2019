@@ -27,13 +27,13 @@ ccor.MultiEWMA <- function(object, diagonal = TRUE, duplicates = TRUE, ...){
     correlations[t, ] <- c(cov2cor(matrix(correlations[t, ], nrow = c, ncol = c, byrow = TRUE)))
   }
   
-  if(diagonal == FALSE){
+  if(!diagonal){
     for (k in 1:c){
       correlations <- correlations[, -grep(paste0(k,k), colnames(correlations))]
     }
   }
   
-  if(duplicates == FALSE){
+  if(!duplicates){
     # Extract and sort column names, and keep only unique ones
     nams <- colnames(correlations)
     nams <- unname(sapply(nams, FUN = function(x) paste(sort(unlist(strsplit(x, ""))), collapse = "")))

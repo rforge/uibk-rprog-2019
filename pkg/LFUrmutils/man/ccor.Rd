@@ -19,11 +19,16 @@ ccor(object, ...)
 \details{
 Depending on the application, diagonal elements may be deleted, since they are always equal to one. Likewise, duplicated off-diagonal elements may be deleted due to the symmetry of the variance-covariance matrix. However, keep in mind that both diagonal elements as well as duplicated off-diagonal elements may be necessary to compute the variance-covariance matrix. 
 }
+\note{
+Note that the function is currently only implemented for objects of class \code{MultiEWMA}. Implementation for other multivariate volatility models may be added in future releases.
+}
 \value{
 \item{rho }{A \code{zoo} object containing the conditional correlations between the volatilities of the corresponding assets. Each row of the output object represents the correlation matrix (or elements thereof) of the corresponding day.}
 }
 \references{
+Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
 Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
+Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineering, 2nd. Springer. New York.
 }
 \author{
 Bernhard Eder
@@ -32,16 +37,11 @@ Bernhard Eder
 \code{\link{MultiEWMA}}, \code{\link{varcov}}, \code{\link{vola}}, \code{\link{ccor}}.
 }
 \examples{
-# Load financial prices and compute returns
-library("tseries")
 library("zoo")
-p1 <- get.hist.quote("msft", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-p2 <- get.hist.quote("ibm", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-y1 <- diff(log(p1)) * 100
-y2 <- diff(log(p2)) * 100
-y <- merge(y1, y2)
+
+# Load returns
+data("CRSPday_zoo")
+y <- CRSPday_zoo
 
 # Compute multivariate EWMA model (RiskMetrics)
 EWMA <- MultiEWMA(y, center = TRUE)

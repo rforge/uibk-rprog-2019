@@ -2,10 +2,10 @@
 ## Determine next business day ----
 ## ## ## ##
 
-NextBusinessDay <- function(x){
+NextBusinessDay <- function(x, exchange = "UnitedStates/NYSE"){
   i <- FALSE
   NBD <- end(x) + 1
-  while(i == FALSE){
+  while(!i){
     i <- RQuantLib::isHoliday("UnitedStates/NYSE", NBD)
     NBD <- NBD + 1
   }
@@ -38,29 +38,14 @@ matrix.sqrt.inv <- function(A){
   return(Asqrt)
 }
 
+
 ## ## ## ##
-## Likelihood ratio tests ----
+## fGARCH methods ----
 ## ## ## ##
 
-lrtest <- function(object, ...){
-  UseMethod("lrest")
-}
-
-# fGARCH
-lrtest.fGARCH <- function(object1, object2){
-  x_llh <- as.numeric(abs(object1@fit$llh))
-  y_llh <- as.numeric(abs(object2@fit$llh))
-  
-  x_par <- length(object1@fit$par)
-  y_par <- length(object2@fit$par)
-  
-  par <- matrix(nrow = 1, ncol = 3)
-  colnames(par) <- c("LR statistic", "Restrictions", "Pr(>Chisq)")
-  
-  par[1, 1] <- 2 * abs(x_llh - y_llh)
-  par[1, 2] <- abs(x_par - y_par)
-  par[1, 3] <- round(pchisq(par[1], par[2], lower.tail = FALSE), 3)
-  par[1, 1] <- round(par[1, 1], 3)
-  
-  return(par)
+"$.fGARCH" <- function(object, x) {
+  wi <- pmatch(x, colnames(object))
+  if (is.na(wi)) 
+    NULL
+  else object[, wi]
 }

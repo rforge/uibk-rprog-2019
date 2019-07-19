@@ -25,7 +25,9 @@ Returns the variance-covariance matrix of a multivariate volatility model.
 A multivariate \code{zoo} object. Each row of the output objects represents the correlation matrix (or elements thereof) of the corresponding day.
 }
 \references{
+Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
 Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
+Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineering, 2nd. Springer. New York.
 }
 \author{
 Bernhard Eder
@@ -34,16 +36,9 @@ Bernhard Eder
 \code{\link{MultiEWMA}}, \code{\link{ccor}}
 }
 \examples{
-# Load financial prices and compute returns
-library("tseries")
-library("zoo")
-p1 <- get.hist.quote("msft", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-p2 <- get.hist.quote("ibm", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-y1 <- diff(log(p1)) * 100
-y2 <- diff(log(p2)) * 100
-y <- merge(y1, y2)
+# Load returns
+data("CRSPday_zoo")
+y <- CRSPday_zoo
 
 # Compute multivariate EWMA model
 ewma <- MultiEWMA(y, center = TRUE)

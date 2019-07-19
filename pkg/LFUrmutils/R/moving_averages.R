@@ -1,49 +1,88 @@
 ## ## ## ##
+## Utility functions to estimate lambda in EWMA models ----
+## ## ## ##
+
+nllik.ewma <- function(lambda0, innov){
+  clambda0 <- 1-lambda0
+  Sigma.hat <- var(innov)
+  invSigma.hat <- chol2inv(chol(Sigma.hat))
+  detSigma.hat <- det(Sigma.hat)
+  
+  llik <- -0.5 * log(detSigma.hat) - 0.5 * crossprod(innov[1,],invSigma.hat) %*% innov[1,]
+  llik <- llik - 0.5 * log(detSigma.hat) - 0.5 * crossprod(innov[2,],invSigma.hat) %*% innov[2,]
+  
+  n <- dim(innov)[1]
+  
+  for(i in 3:n){
+    atm1 <- innov[(i-1),]
+    at <- innov[i,]
+    denom <- 1 - lambda0^(i-1)
+    Sigma.hat <- (clambda0/denom) * tcrossprod(atm1) + (lambda0 * (1-lambda0^(i-2)) / denom) * Sigma.hat
+    invSigma.hat <- chol2inv(chol(Sigma.hat))
+    detSigma.hat <- det(Sigma.hat)
+    llik <- llik - 0.5 * (log(detSigma.hat) + crossprod(at,invSigma.hat) %*% at)
+  }
+  
+  nllik <- -llik
+  
+  return(nllik)
+}
+
+est.ewma <- function(lambda, innov){
+  out <- optim(lambda, nllik.ewma, lower = 0.001, upper = 0.999, innov = innov, method = "L-BFGS-B", hessian = TRUE)
+  llh <- out$value
+  lambda.hat <- out$par
+  lambda.hat.se <- 1 / sqrt(out$hessian)
+  output <- list(lambda.hat = lambda.hat, lambda.hat.se = lambda.hat.se, llh = llh)
+}
+
+
+## ## ## ##
 ## Univariate volatility models ----
 ## ## ## ##
 
-# UnivMA <- function(returns, width = 30, center = FALSE){
-#   # Center returns for comparability reasons
-#   if (center == TRUE){
-#     returns <- scale(returns, center = TRUE, scale = FALSE)
-#   }
-#   
-#   # Compute variance
-#   sigma_t2 <- rollmeanr(returns^2, k = width, fill = NA)
-#   
-#   # Add empty row
-#   NBD <- NextBusinessDay(returns)
-#   newrow <- zoo(NA, NBD)
-#   sigma_t2 <- suppressWarnings(rbind(sigma_t2, newrow))
-#   colnames(sigma_t2) <- "Variance"
-#   
-#   # Lead series by one observation
-#   sigma_t2 <- lag(sigma_t2, -1)
-#   
-#   # Create and return output object
-#   object <- list(Variance = sigma_t2, Returns = returns, width = width, center = center)
-#   attr(object, "class") <- c("UnivMA", "UnivVola")
-#   return(object)
-# }
-
 UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics", "WeightedAverage", "MovingAverage"), center = FALSE){
   # Check validity of model variant
-  "%!in%" <- Negate("%in%")
-  if (type %!in% c("RiskMetrics", "WeightedAverage", "MovingAverage")){
-    stop("type must be either \"RiskMetrics\", \"WeightedAverage\" or \"MovingAverage\".")
-  }
+  
+  # "%!in%" <- Negate("%in%")
+  # if (type %!in% c("RiskMetrics", "WeightedAverage", "MovingAverage")){
+  #  stop("type must be either \"RiskMetrics\", \"WeightedAverage\" or \"MovingAverage\".")
+  #}
+  
+  type <- match.arg(type, c("RiskMetrics", "WeightedAverage", "MovingAverage"))
+  
+  # Set lambda.se to NA
+  lambda.se <- NA
+  llh <- NA
   
   # Center returns for comparability reasons
-  if (center == TRUE){
+  if (center){
     returns <- scale(returns, center = TRUE, scale = FALSE)
   }
   
+  # Estimate lambda if desired
   if (type %in% c("RiskMetrics", "WeightedAverage")){
-    if(lambda <= 0 | lambda >= 1){
-      stop("lambda must be between 0 and 1.")
+    
+    if(lambda == 0 || lambda >= 1){
+      stop("lambda must be between 0 and 1. If a negative value is supplied, lambda will be estimated from the data.")
     }
+    
+    if(lambda < 0){
+      lambda.est <- est.ewma(0.95, as.matrix(returns))
+      lambda <- lambda.est$lambda.hat
+      lambda.se <- lambda.est$lambda.hat.se
+      llh <- lambda.est$llh
+      
+      tval <- lambda/lambda.se
+      matcoef <- cbind(lambda, lambda.se, tval, 2 * (1 - pnorm(abs(tval))))
+      dimnames(matcoef) = list(names(tval), c(" Estimate", " Std. Error", " t value", "Pr(>|t|)"))
+      cat("\nCoefficient(s):\n")
+      printCoefmat(matcoef, digits = 4, signif.stars = TRUE)
+    }
+    
     # Compute 1-lambda for efficiency reasons
     nlambda <- 1 - lambda
+    
   }
   
   if (type == "RiskMetrics") {
@@ -103,7 +142,8 @@ UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics",
   }
   
   # Create and return output object
-  object <- list(Variance = sigma_t2, Returns = returns, variant = match.arg(type), width = width, lambda = lambda, centered = center)
+  object <- list(Variance = sigma_t2, Returns = returns, variant = match.arg(type), width = width, 
+                 lambda = lambda, lambda.se = lambda.se, llh = llh, centered = center)
   attr(object, "class") <- c("UnivVola")
   
   return(object)
@@ -119,10 +159,30 @@ MultiEWMA <- function(returns, lambda = 0.94, center = FALSE){
   x <- coredata(returns)
   n <- dim(x)[1] + 1
   d <- dim(x)[2]
+  lambda.se <- NA
+  llh <- NA
   
   # Center returns for comparability reasons
-  if (center == TRUE){
+  if (center){
     x <- scale(x, center = TRUE, scale = FALSE)
+  }
+  
+  # Check lambda
+  if(lambda == 0 || lambda >= 1){
+    stop("lambda must be between 0 and 1. If a negative value is supplied, lambda will be estimated from the data.")
+  }
+  
+  if(lambda < 0){
+    lambda.est <- est.ewma(0.95, as.matrix(returns))
+    lambda <- lambda.est$lambda.hat
+    lambda.se <- lambda.est$lambda.hat.se
+    llh <- lambda.est$llh
+    
+    tval <- lambda/lambda.se
+    matcoef <- cbind(lambda, lambda.se, tval, 2 * (1 - pnorm(abs(tval))))
+    dimnames(matcoef) = list(names(tval), c(" Estimate", " Std. Error", " t value", "Pr(>|t|)"))
+    cat("\nCoefficient(s):\n")
+    printCoefmat(matcoef, digits = 4, signif.stars = TRUE)
   }
   
   # Create names
@@ -155,7 +215,7 @@ MultiEWMA <- function(returns, lambda = 0.94, center = FALSE){
   SIGMA_t <- zoo(SIGMA_t, index(newindex))
   x <- zoo(x, index(returns))
   
-  object <- list(Variances = SIGMA_t, Returns = x, lambda = lambda, centered = center)
+  object <- list(Variances = SIGMA_t, Returns = x, lambda = lambda, lambda.se = lambda.se, llh = llh, centered = center)
 
   attr(object, "class") <- "MultiEWMA"
   return(object)

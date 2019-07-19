@@ -1,14 +1,14 @@
 Package: LFUrmutils
 Title: LFU Risk Management Utilities
-Version: 0.0-3
+Version: 0.1-0
 Date: 2019-07-09
 Authors@R: person(given = "Bernhard", family = "Eder", role = c("aut", "cre"), email = "bernhard.eder@uibk.ac.at")
-Depends: R (>= 3.0.0)
-Imports: RQuantLib, stats, tseries, zoo
+Depends: R (>= 3.5.0)
+Imports: graphics, grDevices, RQuantLib, stats, utils, zoo
 Suggests: fGarch, knitr, lmtest, MTS, rugarch, rmgarch
 VignetteBuilder: knitr
-Description: Utility functions for the bachelor's seminar in risk management are provided.
-  These include functions to compute (exponentially weighted) moving average models, 
-  likelihood ratio tests for GARCH models, and some convenience functions 
-  to make the output of various volatility models compareable.
+Description: Utility functions for the bachelor's seminar in risk management at the University of Innsbruck are provided.
+  These include functions to compute (exponentially weighted) moving average models, a logLik method for fGARCH objects, 
+  and some convenience functions to make the output of various volatility models compareable, as well as a function to 
+  compute the corresponding mean squared errors.
 License: GPL-2 | GPL-3

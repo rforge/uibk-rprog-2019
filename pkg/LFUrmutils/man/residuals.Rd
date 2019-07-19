@@ -18,13 +18,15 @@ Function to compute the residuals of univariate or multivariate volatility model
   \item{...}{Arguments passed to methods.}
 }
 \details{
-By default standardized residuals are computed. For comparability reasons with the function \code{residuals()} from package \code{fGarch} non-standardized residuals can be computed as well. However, these correspond simply to the return series used to compute the conditional volatilities.
+By default standardized residuals are computed. For comparability reasons with the function \code{residuals()} from package \code{fGarch}, non-standardized residuals can be computed as well. Depending on the data used to compute the volatility models, the non-standardized residuals will either correspond to the return series or the residuals of the conditional mean model.
 }
 \value{
 A \code{zoo} object containing the residuals for each return series.
 }
 \references{
+Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
 Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
+Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineering, 2nd. Springer. New York.
 }
 \author{
 Bernhard Eder
@@ -33,16 +35,9 @@ Bernhard Eder
 \code{\link{UnivVola}}, \code{\link{MultiEWMA}}.
 }
 \examples{
-# Load financial prices and compute returns
-library("tseries")
-library("zoo")
-p1 <- get.hist.quote("msft", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-p2 <- get.hist.quote("ibm", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-y1 <- diff(log(p1)) * 100
-y2 <- diff(log(p2)) * 100
-y <- merge(y1, y2)
+# Load returns
+data("CRSPday_zoo")
+y <- CRSPday_zoo
 
 # Compute multivariate EWMA model (RiskMetrics)
 EWMA <- MultiEWMA(y, center = TRUE)

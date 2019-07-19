@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{LFU Risk Management Utilities}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: bibliography.bib
 ---
 
 ```{r setup, include = FALSE}
@@ -18,35 +19,25 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The following vignette provides a short tutorial on the multivariate exponential weighted moving average (EWMA) model, as it is implemented in `LFUrmutils`. The multivariate EWMA model is also implemented in the package `MTS`. In comparison to MTS, our package preserves the time dimension of the used time series and also calculates the volatility for the next trading day (on the New York Stock Exchange) at the end of the time series. In addition, our package offers various convenience functions for calculating residuals and extracting the conditional variance-covariance matrices, conditional volatilities as well as conditional correlations from the output object. In contrast to MTS, it is however not yet possible to estimate the decay parameter directly from the data.
+The following vignette provides a short tutorial on the multivariate exponential weighted moving average (EWMA) model, as it is implemented in `LFUrmutils`. The multivariate EWMA model is also implemented in the package `MTS`. In comparison to MTS, our package preserves the time dimension of the used time series and also calculates the volatility for the next trading day (on the New York Stock Exchange) at the end of the time series. In addition, our package offers various convenience functions for calculating residuals and extracting the conditional variance-covariance matrices, conditional volatilities as well as conditional correlations from the output object.
 
 ## Data analysis
 
-First, we need to download the stock prices of several assets, and compute the corresponding log returns. For this example we use the adjusted closing prices of Microsoft, IBM and Goldman Sachs from the first of January 2010 until the 31st December 2018. Additionally, we plot the time series of the (squared) returns, to make ourselves comfortable with the data.
+First, we need to import financial returns. For this example we use daily returns of General Electric (ge), IBM (ibm) and Mobil Company (mobil) from the third of January 1989 to the 31st December 1998.^[The dataset is included in the package.] Additionally, we plot the time series of the (squared) returns, to make ourselves comfortable with the data.
 
 ```{r download, fig.show='hold'}
 library(LFUrmutils)
-library(tseries)
 library(zoo)
 
-p1 <- get.hist.quote("msft", "2010-01-01", "2018-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-p2 <- get.hist.quote("ibm", "2010-01-01", "2018-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-p3 <- get.hist.quote("gs", "2010-01-01", "2018-12-31", 
-                     quote = "Adjusted", quiet = TRUE)
+data(CRSPday_zoo)
+y <- CRSPday_zoo
 
-y1 <- diff(log(p1)) * 100
-y2 <- diff(log(p2)) * 100
-y3 <- diff(log(p3)) * 100
-
-y <- merge(y1, y2, y3)
 head(y)
 plot(y)
 plot(y^2)
 ```
 
-We can clearly see that there are volatility clusters present in the individual time series. Moreover, they appear at the same time, especially at Microsoft and IBM, which belong to the same industry. In addition, we could for example compute the autocorrelation functions of the squared return series, in order to gauge volatility clusters more formally, which is left as an exercise to the reader.
+We can clearly see that there are volatility clusters present in the individual time series. Moreover, they seem to appear sometimes at the same time. In addition, we could for example compute the autocorrelation functions of the squared return series, in order to gauge volatility clusters more formally. However, this is left as an exercise to the reader.
 
 ## Model computation and diagnostics
 
@@ -54,7 +45,7 @@ Now it is time to compute the multivariate EWMA model:
 
 $$\hat{\Sigma}_t=(1-\lambda)y'_{t-1}y_{t-1}+\lambda\hat{\Sigma}_{t-1}$$
 
-For the decay parameter $\lambda$ a value of 0.94 is chosen, as suggested by RiskMetrics (1997). However, it would be possible at least in principle to use any value between 0 and 1, although values between 0.9 and 1 are generally recommended.
+In line with industry practice, a value of 0.94 is chosen by default for the decay parameter $\lambda$, as suggested for daily equity returns by @RiskMetrics96.^[Note that `EWMAvola` in `MTS` uses a default value of 0.96.] Although it would be possible -- at least in principle -- to use any value between 0 and 1, values between 0.9 and 1 are generally recommended. Moreover, if a negative value for $\lambda$ is supplied to the estimation function, it will be estimated from the data.
 
 ```{r ewma, fig.width=7, fig.height=7}
 # Compute the EWMA model
@@ -64,56 +55,51 @@ EWMA <- MultiEWMA(y, center = TRUE)
 head(EWMA$Returns)
 head(y)
 
-# Compute and plot the residuals
-EWMAres <- residuals(EWMA, standardize = TRUE)
-plot(EWMAres)
+# Plot the residuals
+# plot(EWMA, which = 7)
 
-plot(EWMA$Returns[, 1], col = "gray")
-lines(1.96 * sqrt(EWMA$Variances[, 1]))
-lines(- 1.96 * sqrt(EWMA$Variances[, 1]))
-legend("bottomright", bty = "n", lwd = 1, col = c("gray", "black"), 
-       legend = c("Returns", "+/- 1.96 * Volatility"))
+# Plot the return series with 1.96 * conditional volatility superimposed
+# plot(EWMA, which = 3)
 ```
 
-Comparing the residuals with the original return series, we can see that the model partly captures the volatility clusters, although some significant outliers remain, which is confirmed by the second plot.
+Note that `MultiEWMA()` centers the return series by default.^[In order to use the original return series, one has to set `center=FALSE`.] Comparing the residuals with the original return series, we can see that the model partly captures the volatility clusters, although some significant outliers remain, which is confirmed by the second plot.
 
 ## Conditional volatilities and correlations
 
-In this section we demonstrate how we can extract the conditional volatilities and correlations. Note that each row in the output corresponds to the specified elements of conditional volatility matrix, or the conditional correlation matrix, respectively. Due to the symmetry of the matrices, it is possible to suppress redundant elements, which is particularly useful for graphical purposes. In the case of the volatility matrix, it is also possible to exclude the elements outside the diagonals. It is also possible to exclude the diagonal elements of the correlation matrix because they are always equal to one.
+In this section we demonstrate how we can extract the conditional volatilities and correlations. The conditional volatilities are the square root of the diagonal elements of the variance-covariance matrix.^[It is also possible to extract the square root of the off-diagonal elements of the variance-covariance matrix. However, they are not be meaningful in practice.] Note that each row in the output corresponds to the specified elements of conditional volatility matrix, or the conditional correlation matrix, respectively. Due to the symmetry of the matrices, it is possible to suppress redundant elements, which is particularly useful for graphical purposes. In the case of the volatility matrix, it is also possible to exclude the elements outside the diagonals. It is also possible to exclude the diagonal elements of the correlation matrix because they are always equal to one.
 
 ```{r volacor, fig.width=7, fig.height=7}
-EWMAvola <- vola(EWMA, duplicates = FALSE)
-plot(EWMAvola)
-
-EWMAccor <- ccor(EWMA, diagonal = FALSE, duplicates = FALSE)
-plot(EWMAccor)
+EWMAvola <- vola(EWMA)
+#plot(EWMA, which = 2)
+#plot(EWMA, which = 13)
 ```
 
-Moreover, we can compare the conditional correlations from the multiviarate EWMA model to the 30-day rolling correlation. We carry out this analysis as an example for the returns of Microsoft and IBM. We can see that even the simple EWMA model captures the conditional correlations quite well.
+Moreover, we can compare the conditional correlations from the multiviarate EWMA model to the 30-day rolling correlation. We carry out this analysis as an example for the returns of General Electric and IBM. We can see that even the simple EWMA model captures the conditional correlations quite well.
 
 ```{r rollcor, fig.width=7, fig.height=7}
-cor_MSFT_IBM <- rollapplyr(y[, c(1:2)], width = 30, by.column = FALSE, 
+EWMAccor <- ccor(EWMA, diagonal = FALSE, duplicates = FALSE)
+cor_GE_IBM <- rollapplyr(y[, c(1:2)], width = 30, by.column = FALSE, 
                            FUN = function(x) cor(x[, 1], x[, 2]), fill = NA)
-cor_MSFT_IBM <- zoo(cor_MSFT_IBM, index(y1))
-#tail(cor_MSFT_IBM)
+cor_GE_IBM <- zoo(cor_GE_IBM, index(y))
 plot(EWMAccor[, 1])
-lines(cor_MSFT_IBM, col = "green", lty = 2)
+lines(cor_GE_IBM, col = "green", lty = 2)
 ```
 
 ## Compute the conditional variance-covariance matrix
 
-In this section we demonstrate, how one can compute the conditional variance-covariance matrix based on the conditional volatilities and the conditional correlations. To this end, we need to compute and extract the diagonal elements of the volatility matrix, and the whole correlation matrix. Next, we setup an object to store the variance-covariance matrix, and compute it thereafter. Finally, we compare the computed variance-covariance matrix with the original variance-covariance matrix. As we can see, we are able to "rebuild" the conditional variance-covariance matrix.
+In this section we demonstrate the relationship between the conditional variance-covariance matrix, the conditional volatilities and the conditional correlation matrix. In fact, we can compute the conditional-variance-covariance matrix from the conditional volatilities and the conditional correlations.
+
+First, we need to compute and extract the diagonal elements of the volatility matrix, and the whole correlation matrix. Next, we setup an object to store the variance-covariance matrix, and compute it thereafter. Finally, we compare the computed variance-covariance matrix with the original variance-covariance matrix. As we can see, we are able to "rebuild" the conditional variance-covariance matrix.
+
+This computation is especially useful to investigate diversification effects on portfolio risk.
 
 ```{r varcov}
-EWMAvola <- vola(EWMA, duplicates = TRUE, offdiagonal = FALSE)
+EWMAvola <- vola(EWMA)
 EWMAccor <- ccor(EWMA)
 
 TT <- dim(EWMAccor)[1]
 c <- sqrt(dim(EWMAccor)[2])
 VarCov <- matrix(NA, dim(EWMAccor)[1], dim(EWMAccor)[2])
-# diag(as.numeric(EWMAvola[1, ]))
-# as.numeric(EWMAccor[1, ])
-# matrix(as.numeric(EWMAccor[1, ]), c, c,  byrow = TRUE)
 
 for(i in 1:TT){
   VarCov[i, ] <- c(diag(as.numeric(EWMAvola[i, ])) 
@@ -126,3 +112,5 @@ VarCov <- zoo(VarCov, order.by = index(EWMAvola))
 tail(VarCov[, c(1:4)])
 tail(EWMA$Variances[, c(1:4)])
 ```
+
+# References

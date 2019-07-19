@@ -20,7 +20,7 @@ varcov.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE, ...)
   timestamps <- index(object$Variances)
 
   # Delete off-diagonal elements if not necessary
-  if(offdiagonal == FALSE){
+  if(!offdiagonal){
     n <- dim(VarCov)[1]
     c <- sqrt(dim(VarCov)[2])
     diago <- matrix(NA, nrow = n, ncol = c)
@@ -40,8 +40,8 @@ varcov.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE, ...)
   }
   
   # Delete duplicate columns
-  if(offdiagonal == TRUE){
-    if(duplicates == FALSE){
+  if(offdiagonal){
+    if(!duplicates){
       corematrix <- matrix(coredata(VarCov), nrow = dim(VarCov)[1], ncol = dim(VarCov)[2])
       duplicate <- duplicated(round(t(corematrix), 10))
       VarCov <- VarCov[, !duplicate]
@@ -49,7 +49,7 @@ varcov.MultiEWMA <- function(object, offdiagonal = TRUE, duplicates = TRUE, ...)
     }
   }
   
-  if(offdiagonal == FALSE & duplicates == FALSE){
+  if(!offdiagonal && !duplicates){
     message("Note that there are no offdiagonal elements. Hence, argument \"duplicates\" is ignored.")
   }
   

@@ -13,22 +13,24 @@ A function to compute the conditional volatilities of univariate and multivariat
 \usage{
 \method{vola}{UnivVola}(object, ...)
 \method{vola}{fGARCH}(object, ...)
-\method{vola}{MultiEWMA}(object, offdiagonal = TRUE, duplicates = TRUE, ...)
+\method{vola}{MultiEWMA}(object, offdiagonal = FALSE, duplicates = FALSE, ...)
 }
 \arguments{
   \item{object}{An object of class \code{UnivVola}, \code{fGARCH} or \code{MultiEWMA}.}
-  \item{offdiagonal}{Whether diagonal elements should be kept or not. \code{TRUE} (the default) or \code{FALSE}.}
+  \item{offdiagonal}{Whether diagonal elements should be kept or not. \code{FALSE} (the default) or \code{TRUE}.}
   \item{duplicates}{Whether duplicate off-diagonal elements should be kept or not. \code{TRUE} (the default) or \code{FALSE}.}
   \item{...}{Arguments passed to methods.}
 }
 \details{
-Depending on the application, off-diagonal elements of multivariate volatility models may be deleted. Likewise, duplicated off-diagonal elements may be deleted as well, due to the symmetry of the volatility matrix.
+Depending on the application, diagonal elements of multivariate volatility models may be printed. However, they are usually not required in practice, and may not have a meaningful interpretation. However, if they are printed, duplicated off-diagonal elements may be deleted, due to the symmetry of matrix.
 }
 \value{
-A \code{zoo} object containing the volatilities. In the multivariate model each row of the output objects represents the correlation matrix (or elements thereof) of the corresponding day.
+A \code{zoo} object containing the volatilities. In the multivariate model each row of the output objects represents the volatility matrix (or elements thereof) of the corresponding day.
 }
 \references{
+Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
 Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
+Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineering, 2nd. Springer. New York.
 }
 \author{
 Bernhard Eder
@@ -37,23 +39,18 @@ Bernhard Eder
 \code{\link{UnivVola}}, \code{\link{MultiEWMA}}, \code{\link{varcov}}, \code{\link{ccor}}.
 }
 \examples{
-# Load financial prices and compute returns
-library("tseries")
 library("zoo")
-p1 <- get.hist.quote("msft", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-p2 <- get.hist.quote("ibm", "2000-01-01", "2009-12-31",
-                     quote = "Adjusted", quiet = TRUE)
-y1 <- diff(log(p1)) * 100
-y2 <- diff(log(p2)) * 100
-y <- merge(y1, y2)
+
+# Load returns
+data("CRSPday_zoo")
+y <- CRSPday_zoo
 
 # Compute multivariate EWMA model (RiskMetrics)
 EWMA <- MultiEWMA(y, center = TRUE)
 
 # Compute variance-covariance matrix
   # Compute relevant volatilities
-  EWMAvola <- vola(EWMA, duplicates = TRUE, offdiagonal = FALSE)
+  EWMAvola <- vola(EWMA)
   head(EWMAvola)
   
   # Compute conditional correlations
@@ -79,7 +76,3 @@ VarCov <- zoo(VarCov, order.by = index(EWMAvola))
 head(VarCov)
 head(EWMA$Variances)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
