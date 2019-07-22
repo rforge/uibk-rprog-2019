@@ -5,10 +5,10 @@
 Daily Returns from the CRSP Database
 }
 \description{
-Daily observations from 1969-01-03 to 1998-12-31.
-Number of Observations: 2528
-Observation: returns
-country: United States
+Daily observations from 1969-01-03 to 1998-12-31. \cr
+Number of Observations: 2528. \cr
+Observation: returns. \cr
+Country: United States. \cr
 }
 \usage{data("CRSPday_zoo")}
 \format{
@@ -20,9 +20,10 @@ country: United States
   }
 }
 \source{
-Dataset based on \link[Ecdat:CRSPday]{CRSPday}. Original source: Center for Research in Security Prices, Graduate School of Business, University of Chicago, 725 South Wells - Suite 800, Chicago, Illinois 60607, \url{http://www.crsp.com}.
+Dataset based on \code{\link[Ecdat:CRSPday]{CRSPday}} in package \pkg{Ecdat}. Original source: Center for Research in Security Prices, Graduate School of Business, University of Chicago, 725 South Wells - Suite 800, Chicago, Illinois 60607, \url{http://www.crsp.com}.
 }
 \references{
 Davidson, R. and James G. MacKinnon (2004) Econometric Theory and Methods, New York, Oxford University Press, \url{http://www.econ.queensu.ca/ETM/}, chapter 7, 9 and 15.
 }
 \keyword{datasets}
+\concept{financial returns}

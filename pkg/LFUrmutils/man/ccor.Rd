@@ -74,3 +74,4 @@ VarCov <- zoo(VarCov, order.by = index(EWMAvola))
 head(VarCov)
 head(EWMA$Variances)
 }
+\concept{conditional correlation}

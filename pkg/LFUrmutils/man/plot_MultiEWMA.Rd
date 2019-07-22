@@ -15,22 +15,22 @@ Plot methods for multiviarate EWMA models models.
   \item{...}{Optional Arguments to be passted.}
 }
 \details{
-The generic function \code{plot} allows to display 14 graphs. These are the
+The generic function \code{plot} allows to display 14 graphs. These are the \cr
 
-Time Series, 
-Conditional SD, 
-Series with 1.96 Conditional SD Superimposed, 
-ACF of Observations, 
-ACF of Squared Observations, 
-Cross Correlation Plot between (Squared) Returns,
-Standardized Residuals, 
-ACF of Standardized Residuals, 
-ACF of Squared Standardized Residuals, 
-Cross Correlation Plot between (Squared) Residuals,
-Conditional Variance-Covariance Matrix,
-Diagonal Elements of the Conditional Variance-Covariance Matrix, 
-Conditional Correlations, 
-Snapshot of the Model
+Time Series, \cr
+Conditional SD, \cr
+Series with 1.96 Conditional SD Superimposed, \cr
+ACF of Observations, \cr
+ACF of Squared Observations, \cr
+Cross Correlation Plot between (Squared) Returns, \cr
+Standardized Residuals, \cr
+ACF of Standardized Residuals, \cr
+ACF of Squared Standardized Residuals, \cr
+Cross Correlation Plot between (Squared) Residuals, \cr
+Conditional Variance-Covariance Matrix, \cr
+Diagonal Elements of the Conditional Variance-Covariance Matrix,\cr
+Conditional Correlations, \cr
+Snapshot of the Model\cr
 
 The "Snapshot of the Model" plots the conditional volatilities of the first two return series, as well as their conditional covariance, and their conditional correlation. See Ruppert and Matteson (2015, p. 428 -- 443) for further details.
 }
@@ -51,8 +51,12 @@ y <- CRSPday_zoo
 # Compute multivariate volatility model
 EWMA <- MultiEWMA(y)
 
+# Plot conditional standard deviations
+plot(EWMA, which = 2)
+
 \dontrun{
 # Interactive plot
 plot(EWMA)
 }
 }
+\keyword{hplot}

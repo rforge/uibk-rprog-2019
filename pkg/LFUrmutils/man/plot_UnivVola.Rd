@@ -15,17 +15,17 @@ Plot methods for univariate volatility models.
   \item{...}{Optional Arguments to be passted.}
 }
 \details{
-The generic function \code{plot} allows to display 10 graphs. These are the
+The generic function \code{plot} allows to display 10 graphs. These are the \cr
 
-Time Series Plot
-Conditional Standard Deviation (Volatility) Plot
-Series Plot with 1.96 Conditional SD Superimposed
-Autocorrelation Function Plot of Observations
-Autocorrelation Function Plot of Squared Observations
-Cross Correlation Plot between (Squared) Observations
-Standardized Residuals Plot
-ACF Plot of Standardized Residuals
-ACF Plot of Squared Standardized Residuals
+Time Series Plot, \cr
+Conditional Standard Deviation (Volatility) Plot, \cr
+Series Plot with 1.96 Conditional SD Superimposed, \cr
+Autocorrelation Function Plot of Observations, \cr
+Autocorrelation Function Plot of Squared Observations, \cr
+Cross Correlation Plot between (Squared) Observations, \cr
+Standardized Residuals Plot, \cr
+ACF Plot of Standardized Residuals, \cr
+ACF Plot of Squared Standardized Residuals, \cr
 Cross Correlation Plot between (Standardized Residuals)
 }
 \seealso{
@@ -50,3 +50,4 @@ plot(ma, which = 2)
 plot(ma)
 }
 }
+\keyword{hplot}

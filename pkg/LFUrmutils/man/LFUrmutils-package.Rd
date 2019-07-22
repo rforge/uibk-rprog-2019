@@ -16,3 +16,4 @@ Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineer
 \author{
 Bernhard Eder
 }
+\keyword{package}

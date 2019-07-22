@@ -43,3 +43,5 @@ RM <- UnivVola(y[, 1], type = "RiskMetrics", lambda = -1, center = TRUE)
 # Extract fitted values
 cond_vola <- fitted(RM)
 }
+\concept{variance-covariance matrix}
+\concept{conditional variance-covariance matrix}

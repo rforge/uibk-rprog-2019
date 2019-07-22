@@ -19,11 +19,13 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The following vignette provides a short tutorial on the multivariate exponential weighted moving average (EWMA) model, as it is implemented in `LFUrmutils`. The multivariate EWMA model is also implemented in the package `MTS`. In comparison to MTS, our package preserves the time dimension of the used time series and also calculates the volatility for the next trading day (on the New York Stock Exchange) at the end of the time series. In addition, our package offers various convenience functions for calculating residuals and extracting the conditional variance-covariance matrices, conditional volatilities as well as conditional correlations from the output object.
+The following vignette provides a short tutorial on the multivariate exponential weighted moving average (EWMA) model, as it is implemented in `LFUrmutils`. The multivariate EWMA model is also implemented in the package `MTS`. In comparison to MTS, our package preserves the time dimension of the used time series, and also calculates the volatility for the next trading day (on the New York Stock Exchange) at the end of the time series. In addition, our package offers various convenience functions for calculating residuals and extracting the conditional variance-covariance matrices, conditional volatilities, as well as conditional correlations from the output object.
+
+For more theoretical background on multivariate volatility models, you may consult for example @Danielsson11, @Jorion07, and @Ruppert15.
 
 ## Data analysis
 
-First, we need to import financial returns. For this example we use daily returns of General Electric (ge), IBM (ibm) and Mobil Company (mobil) from the third of January 1989 to the 31st December 1998.^[The dataset is included in the package.] Additionally, we plot the time series of the (squared) returns, to make ourselves comfortable with the data.
+First, we need to import financial returns. For this example, we use daily returns of General Electric (ge), IBM (ibm) and Mobil Company (mobil) from the third of January 1989 to the 31st December 1998.^[The dataset is included in the package.] Additionally, we plot the time series of the (squared) returns, to make ourselves comfortable with the data.
 
 ```{r download, fig.show='hold'}
 library(LFUrmutils)
@@ -45,7 +47,7 @@ Now it is time to compute the multivariate EWMA model:
 
 $$\hat{\Sigma}_t=(1-\lambda)y'_{t-1}y_{t-1}+\lambda\hat{\Sigma}_{t-1}$$
 
-In line with industry practice, a value of 0.94 is chosen by default for the decay parameter $\lambda$, as suggested for daily equity returns by @RiskMetrics96.^[Note that `EWMAvola` in `MTS` uses a default value of 0.96.] Although it would be possible -- at least in principle -- to use any value between 0 and 1, values between 0.9 and 1 are generally recommended. Moreover, if a negative value for $\lambda$ is supplied to the estimation function, it will be estimated from the data.
+In line with industry practice, a value of 0.94 is chosen by default for the decay parameter $\lambda$, as suggested for daily equity returns by @RiskMetrics96.^[Note that `EWMAvola` in `MTS` uses a default value of 0.96.] Although it would be possible -- at least in principle -- to use any value between 0 and 1, values between 0.9 and 1 are generally recommended. Moreover, if a negative value for $\lambda$ is supplied to the estimation function, it will be estimated from the data. In comaprison to `EWMAvol()` in `MTS`, `MultiEWMA()` does not use de-meaned returns by default. In order to de-mean the return series, we have to set `center = TRUE`.
 
 ```{r ewma, fig.width=7, fig.height=7}
 # Compute the EWMA model
@@ -56,13 +58,13 @@ head(EWMA$Returns)
 head(y)
 
 # Plot the residuals
-# plot(EWMA, which = 7)
+plot(EWMA, which = 7)
 
 # Plot the return series with 1.96 * conditional volatility superimposed
-# plot(EWMA, which = 3)
+plot(EWMA, which = 3)
 ```
 
-Note that `MultiEWMA()` centers the return series by default.^[In order to use the original return series, one has to set `center=FALSE`.] Comparing the residuals with the original return series, we can see that the model partly captures the volatility clusters, although some significant outliers remain, which is confirmed by the second plot.
+Comparing the residuals with the original return series above, we can see that the model partly captures the volatility clusters, although some significant outliers remain, which is confirmed by the second plot, which shows the return series with 1.96 conditional standard deviations superimposed.
 
 ## Conditional volatilities and correlations
 
@@ -70,8 +72,8 @@ In this section we demonstrate how we can extract the conditional volatilities a
 
 ```{r volacor, fig.width=7, fig.height=7}
 EWMAvola <- vola(EWMA)
-#plot(EWMA, which = 2)
-#plot(EWMA, which = 13)
+plot(EWMA, which = 2)
+plot(EWMA, which = 13)
 ```
 
 Moreover, we can compare the conditional correlations from the multiviarate EWMA model to the 30-day rolling correlation. We carry out this analysis as an example for the returns of General Electric and IBM. We can see that even the simple EWMA model captures the conditional correlations quite well.
@@ -87,7 +89,11 @@ lines(cor_GE_IBM, col = "green", lty = 2)
 
 ## Compute the conditional variance-covariance matrix
 
-In this section we demonstrate the relationship between the conditional variance-covariance matrix, the conditional volatilities and the conditional correlation matrix. In fact, we can compute the conditional-variance-covariance matrix from the conditional volatilities and the conditional correlations.
+In this section we demonstrate the relationship between the conditional variance-covariance matrix, the conditional volatilities and the conditional correlation matrix. In fact, we can compute the conditional-variance-covariance matrix from the conditional volatilities and the conditional correlations by the following equation:
+
+$$\hat\Sigma_t = \text{diag}\{ \sigma_{1,t}, \dots, \sigma_{3,t} \} \; \text{Cor}_t(Y_t) \; \text{diag}\{ \sigma_{1,t}, \dots, \sigma_{3,t} \}, $$
+
+where $\text{diag}\{ \sigma_{1,t}, \dots, \sigma_{3,t} \}$ denotes the square root of the diagonal elements of the variance-covariance matrix (i.e. the conditional volatility, respectively), and $\text{Cor}_t(Y_t)$ is the conditional correlation matrix between the various stocks.
 
 First, we need to compute and extract the diagonal elements of the volatility matrix, and the whole correlation matrix. Next, we setup an object to store the variance-covariance matrix, and compute it thereafter. Finally, we compare the computed variance-covariance matrix with the original variance-covariance matrix. As we can see, we are able to "rebuild" the conditional variance-covariance matrix.
 
@@ -111,6 +117,40 @@ VarCov <- zoo(VarCov, order.by = index(EWMAvola))
 
 tail(VarCov[, c(1:4)])
 tail(EWMA$Variances[, c(1:4)])
+```
+
+## Portfolio risk
+
+Using the conditional variance-covariance matrix, we can also compute the conditional volatility of a portfolio:
+
+$$\hat\sigma_{p,t}=\sqrt{w'\hat\Sigma_t w}$$
+
+where $w$ denotes a vector of portfolio weights. Assuming that we hold an equally-weighted portfolio, we can compute the conditional portfolio volatility in R as follows.^[Note that we implicitly assume that the portfolio weights remain constant over time, which is a common assumption in risk management practice.]
+
+First, we need to define a vector of portfolio weights, and extract the variance-covariance matrix of the fitted object.^[This time we use the function `fitted()` instead of `varcov()`. In comparison to the generic `fitted()` function, `varcov()` provides additional arguments to select only specific elements of the conditional variance-covariance matrix. However, since we need the full conditional variance-covariance matrix, we use `fitted()`, which is slightly faster.] Next, we create an object to store the portfolio volatilities, which we compute subsequently. Thereafter, we add again the time dimension to the output object, and plot it.
+
+```{r portfoliorisk}
+weights <- rep(1/3, times = 3)
+varcov <- fitted(EWMA)
+TT <- dim(varcov)[1]
+Cols <- sqrt(dim(varcov)[2])
+portfolio_volatility <- matrix(NA, nrow = TT)
+
+for(i in 1:TT){
+  portfolio_volatility[i, ] <- t(weights) %*% matrix(varcov[i ,], nrow = Cols, ncol = Cols, byrow = TRUE) %*% weights
+}
+
+portfolio_volatility <- zoo(portfolio_volatility, index(varcov))
+plot(portfolio_volatility)
+```
+
+We can see that the volatility of our assumed portfolio fluctuates over time, and sharply increases at the end of the time series.
+
+Moreover, risk measures are often reported in annual values. In order to annualize the conditional volatility of our portfolio, we can use the square-root of time scaling. Since we have used daily data, and there are roughly 252 trading days in a given year, we can compute the annualized conditional volatility as follows:
+
+```{r sqrtoftime}
+annualized_volatility <- sqrt(252) * portfolio_volatility
+plot(annualized_volatility)
 ```
 
 # References

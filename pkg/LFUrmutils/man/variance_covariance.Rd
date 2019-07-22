@@ -24,6 +24,9 @@ Returns the variance-covariance matrix of a multivariate volatility model.
 \value{
 A multivariate \code{zoo} object. Each row of the output objects represents the correlation matrix (or elements thereof) of the corresponding day.
 }
+\note{
+If the full conditional variance-covariance matrices are needed, users can also use \code{link{fitted}}, which is slightly faster. However, in comparison to \code{fitted}, \code{varcov} gives the user more control over the extracted elements of the conditional variance-covariance matrices. Moreover, in future releases of this package, \code{varcov} may be defined for other multivariate volatility models as well. In this case, the function will provide a convenient infrastructure to better compare the output of these models.
+}
 \references{
 Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
 Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
@@ -47,4 +50,5 @@ ewma <- MultiEWMA(y, center = TRUE)
 EWMAvc <- varcov(ewma)
 plot(EWMAvc)
 }
-
+\concept{variance-covariance matrix}
+\concept{conditional variance-covariance matrix}

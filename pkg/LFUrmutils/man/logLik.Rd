@@ -44,3 +44,5 @@ logLik(RM)
 # Compute AIC
 AIC(RM)
 }
+\concept{log likelihood}
+\concept{AIC}

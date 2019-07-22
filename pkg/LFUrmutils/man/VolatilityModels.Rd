@@ -60,3 +60,11 @@ head(ma$Variances)
 head(ma$Returns)
 head(y[, 1])
 }
+\keyword{models}
+\keyword{ts}
+\concept{moving average}
+\concept{exponential weighted moving average}
+\concept{EWMA}
+\concept{RiskMetrics}
+\concept{univariate volatility models}
+\concept{multivariate volatility models}

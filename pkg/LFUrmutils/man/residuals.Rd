@@ -46,4 +46,4 @@ EWMA <- MultiEWMA(y, center = TRUE)
 EWMAres <- residuals(EWMA)
 plot(EWMAres)
 }
-
+\concept{standardized residuals}
