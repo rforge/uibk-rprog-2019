@@ -20,8 +20,9 @@ MultiEWMA(returns, lambda = 0.94, center = FALSE)
   \item{center}{Should returns be centered before computing the volatility? Included for comparability reasons in \code{EWMAvol} in package \code{MTS}.}
 }
 \details{
-\code{UnivVola} computes univariate volatility models. Currently simple moving average models as well as both types of exponentially weighted moving average models are implemented. \code{MultiEWMA} computes the multivariate exponentially weighted moving average model in RiskMetrics form. Lambda defaults to 0.94, as suggested by RiskMetrics (J.P.Morgan/Reuters, 1996). When a negative value for lambda is supplied, lambda is estimated from the data, using a conditional maximum likelihood approach. See Ruppert and Matteson (2015) for further details.
-
+\code{UnivVola} computes univariate volatility models. Currently simple moving average models as well as both types of exponentially weighted moving average models are implemented. \code{MultiEWMA} computes the multivariate exponentially weighted moving average model in RiskMetrics form. Lambda has a default value of 0.94, as suggested by RiskMetrics (J.P.Morgan/Reuters, 1996). However, when a negative value for lambda is supplied, an optimal lambda will be estimated from the data, using a conditional maximum likelihood approach (see Ruppert and Matteson (2015) for further details).
+}
+\note{
 Note that the models as implemented here implicitly assume that the time series of returns have a conditional expectation of zero, following the usual risk management conventions. Where this is not the case in practical applications, you may estimate a model for the conditional expected value before using the functions herein and use the residuals of that model instead of the original returns as inputs.
 }
 \value{

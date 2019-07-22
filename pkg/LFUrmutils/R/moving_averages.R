@@ -2,6 +2,9 @@
 ## Utility functions to estimate lambda in EWMA models ----
 ## ## ## ##
 
+## COPYRIGHT INFORMATION
+## The original code for the two following functions is due to David Ruppert and David S. Matteson.
+
 nllik.ewma <- function(lambda0, innov){
   clambda0 <- 1-lambda0
   Sigma.hat <- var(innov)

@@ -2,6 +2,9 @@
 ## Generic plot function for univariate volatility models ----
 ## ## ## ##
 
+## COPYRIGHT INFORMATION
+## Parts of the following code were originally developed by Diethelm Wuertz.
+
 plot.UnivVola <- function (x, which = "ask", ...){
   .interactiveUnivVolaPlot(
     x, 

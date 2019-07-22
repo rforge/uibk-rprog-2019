@@ -2,6 +2,9 @@
 ## Generic plot function for multivariate EWMA models ----
 ## ## ## ##
 
+## COPYRIGHT INFORMATION
+## Parts of the following code were originally developed by Diethelm Wuertz.
+
 plot.MultiEWMA <- function (x, which = "ask", ...){
   .interactiveMultiEWMAPlot(
     x, 
