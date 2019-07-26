@@ -1,10 +1,11 @@
-"bcVAR" <- function(data = data, p = 1, constant = TRUE, ...){
+"bcVAR" <- function(data = data, p = 1, type = c("const", "none"), ...){
   
   ## dimensions
   T = nrow(data)
   K = ncol(data)
   
   ## concise matrix notation of the reduced-form VAR model
+  y.orig <- as.matrix(data)
   y <- t(as.matrix(data))
   
   if (any(is.na(y))) 
@@ -20,7 +21,7 @@
     }
   }
   
-  if (constant == FALSE){
+  if (type == "none"){
     X <- Y[, 1:(T-p)]
   } else {
     X <- rbind(matrix(1, 1, T-p), Y[, 1:(T-p)])
@@ -33,22 +34,24 @@
   for (i in 1:(p1-1)){
     datamat <- rbind(datamat, y[, (p1-i):(T-i)])
   } 
-  if (constant == FALSE){
+  if (type == "none"){
     datamat <- datamat
   } else {
     datamat <- rbind(datamat, matrix(1, 1, T-p))
     rownames(datamat)[K*p1+1] <- "const"
   }
+  datamat <- as.data.frame(t(datamat))
   
   ## OLS (reduced-form)
+  # Ahat <- Y%*%t(X) %*% solve(X%*%t(X))
   Ahat <- lm.fit(t(X), t(Y))$coefficients
   Ahat <- t(Ahat)
 
   ## split up Ahat (constant, coeff)
-  if (constant == FALSE){
+  if (type == "none"){
     A.companion.hat <- Ahat[, 1:dim(Ahat)[2]]
   } else {
-    V <- Ahat[1:K, 1]
+    const <- Ahat[1:K, 1]
     A.companion.hat <- Ahat[, 2:dim(Ahat)[2]]
   }
 
@@ -82,33 +85,44 @@
   correction <- BA/(T-p)
   bcLS <- A.companion.hat + correction
   
-  if (constant == FALSE){
+  if (type == "none"){
     coeff <- bcLS
   } else {
-    coeff <- cbind(bcLS, V)
+    coeff <- cbind(bcLS, const)
   }
   
+  ## rename the lags
+  temp1 <- NULL
+  for (i in 1:p) {
+    temp <- paste(colnames(data), ".l", i, sep = "")
+    temp1 <- c(temp1, temp)
+  }
+  names <- c(temp1, "const")
+  names(datamat)[(K+1):(K + K*p + 1)] <- names
+
   ## save the results like the vars package (Pfaff)
   varresult <- list()
   for (i in 1:K){
     varresult[[i]] <- list()
     class(varresult[[i]]) <- "lm"
     varresult[[i]]$coefficients <- coeff[i, ]
+    names(varresult[[i]]$coefficients) <- names
     varresult[[i]]$residuals <- residuals[, i]
   }
-  names(varresult) <- c(names(data))
+  names(varresult) <- c(colnames(data))
   
   call <- match.call()
   
   ## return everything
   result <- list(
     varresult = varresult,
-    datamat = t(datamat), 
-    y = data,
+    datamat = datamat, 
+    y = y.orig,
+    type = type, 
     p = p, 
     K = K,
-    obs = T,
-    toobs = T - p,
+    obs = T - p,
+    totobs = T,
     restrictions = NULL,
     call = call
   )
