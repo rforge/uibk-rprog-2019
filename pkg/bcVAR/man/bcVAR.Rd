@@ -21,7 +21,7 @@ bcVAR(data = data, p = 1, type = c("const", "none"), ...)
 }
 
 \details{
-  Estimates a VAR by OLS and applies the bias correction proposed by Pope, A. L. (1990). The model is of the following form: 
+  Estimates a VAR by OLS and applies the bias correction proposed by Pope (1990). The model is of the following form: 
   
   \deqn{
     Y_t = \bold{v} + \bold{A}Y_{t-1} + \bold{u}_t,
@@ -55,21 +55,19 @@ where
   \item{obs}{An integer specifying the number of used observations.}
   \item{totobs}{An integer specifying the total number of observations.}
   \item{restrictions}{Always \code{NULL}. Zero restrictions of the VAR(p) are not implemented.}
-  \item{call}{The \code{call} to \command{bcVAR()}.}
-  
+  \item{call}{The \code{call} to \command{bcVAR()}.} 
 }
-
-
 
 \author{Simon Röck}
 
 \references{
-  Pope, A. L. (1990),  \emph{Biases of estimators in multivariate non-gausssian autoregressions}, Journal of Time Series Analysis.
+  Pope, A. L. (1990). \dQuote{Biases of Estimators in Multivariate Non-Gausssian Autoregressions},
+  \emph{Journal of Time Series Analysis}, \bold{11}(3), 249--258. \doi{10.1111/j.1467-9892.1990.tb00056.x}
 
-  Kilian, L., & Lütkepohl, H. (2017), \emph{Structural Vector Autoregressive Analysis}, Cambridge University Press, Cambridge.
+  Kilian, L., & Lütkepohl, H. (2017). \emph{Structural Vector Autoregressive Analysis}, Cambridge University Press, Cambridge.
   
-  Pfaff, B. (2008), \emph{VAR, SVAR and SVEC Models: Implementation Within R Package vars}, Journal of Statistical Software.
-  
+  Pfaff, B. (2008). \dQuote{VAR, SVAR and SVEC Models: Implementation within R Package vars},
+  \emph{Journal of Statistical Software}, \bold{27}(4), 1--32. \doi{10.18637/jss.v027.i04}
 }
 
 
@@ -85,7 +83,6 @@ dataDT <- apply(USmacro, 2, function(y) y - mean(y))
 
 ## bias-corrected LS VAR(4) model (see Chapter 2 of Kilian, L., & Luetkepohl, H. (2017))
 bcVAR(dataDT, p = 4, type = "const")
-
 }
 
 \keyword{regression}
