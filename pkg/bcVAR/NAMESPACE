@@ -1,7 +1,6 @@
 export(bcVAR)
 
 import("vars")
-importFrom("matrixcalc", "vec")
 importFrom("stats", "lm.fit")
 
 

@@ -45,14 +45,15 @@
   residuals <- t(Uhat[1:K, ])
   
   ## cov-var matrix reduced-form residuals
-  SIGMAU <- Uhat%*%t(Uhat)*(T-p-K*p-1)^(-1)
+  SIGMAU <- tcrossprod(Uhat)*(T-p-K*p-1)^(-1)
   
   ## Bias-corrected LS (Kilian, L., and Luetkepohl, H. (2017) p. 36) ##
   tA <- t(A.companion.hat)
   I <- diag(K*p)
   
   ## computing GAMMA_Y(0)
-  vecSIGMAY <- solve(diag((K*p)^2) - kronecker(A.companion.hat, A.companion.hat)) %*% vec(SIGMAU)
+  # vecSIGMAY <- solve(diag((K*p)^2) - kronecker(A.companion.hat, A.companion.hat)) %*% matrix(as.vector(SIGMAU))
+  vecSIGMAY <- solve(diag((K*p)^2) - kronecker(A.companion.hat, A.companion.hat), matrix(as.vector(SIGMAU)))  
   dim(vecSIGMAY) <- c(K*p, K*p)          
   GAMMAY <- vecSIGMAY
   
