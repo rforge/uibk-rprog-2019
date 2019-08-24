@@ -1,14 +1,12 @@
 Package: ppml
-Title: Heteroscedastic Tobit Regression Models
-Version: 0.0-1
-Date: 2019-05-27
-Authors@R: person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org")
+Title: ppml
+Version: 0.1
+Date: 2019-08-01
+Authors@R: person(given = "Lukas", family = "Kleinheinz", role = c("aut", "cre"), email = "lukas.kleinheinz@student.uibk.ac.at")
 Depends: R (>= 3.0.0)
-Imports: stats, Formula
-Suggests: crch, lmtest
-Description: Heteroscedastic tobit regression models are provided.
-  These are Gaussian regression models with a response variable left-censored at zero
-  and both distribution parameters (the latent location and scale) parameters
-  can depend on covariates. An identity link is employed for the location
-  equation and a log link for the scale equation.
+Imports: sandwich, lmtest
+Description: Poisson Pseudo Maximum Likelihood Estimator 
+Author: Lukas Kleinheinz [aut, cre]
+Maintainer: Lukas Kleinheinz <lukas.kleinheinzk@student.uibk.ac.at>
 License: GPL-2 | GPL-3
+

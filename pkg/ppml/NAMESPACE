@@ -1,16 +1,7 @@
-import("stats", "Formula")
+export(ppml)
 
-export(
-  "htobit",
-  "htobit_control",
-  "htobit_fit"
-)
+importFrom("sandwich", "vcovHC")
+importFrom("lmtest", "coeftest")
+importFrom("stats", "glm", "quasipoisson")
 
-## methods for htobit
-S3method("coef", "htobit")
-S3method("logLik", "htobit")
-S3method("predict", "htobit")
-S3method("print", "htobit")
-S3method("terms", "htobit")
-S3method("model.frame", "htobit")
-S3method("model.matrix", "htobit")
+
