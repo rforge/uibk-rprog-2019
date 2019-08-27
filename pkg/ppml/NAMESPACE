@@ -1,7 +1,11 @@
-export(ppml)
+## export functions of package
+export("ppml", "bread.ppml", "vcov.ppml", "summary.ppml")
 
-importFrom("sandwich", "vcovHC")
+## methods for ppml
+S3method("vcov", "ppml")
+S3method("summary", "ppml")
+
+## import functions of other packages
+importFrom("sandwich", "sandwich")
 importFrom("lmtest", "coeftest")
-importFrom("stats", "glm", "quasipoisson")
-
-
+importFrom("stats", "glm", "quasipoisson", "summary.glm")

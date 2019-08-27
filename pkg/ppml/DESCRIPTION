@@ -1,12 +1,13 @@
 Package: ppml
-Title: ppml
+Title: Poisson Pseudo Maximum Likelihood Estimator
 Version: 0.1
 Date: 2019-08-01
 Authors@R: person(given = "Lukas", family = "Kleinheinz", role = c("aut", "cre"), email = "lukas.kleinheinz@student.uibk.ac.at")
 Depends: R (>= 3.0.0)
 Imports: sandwich, lmtest
-Description: Poisson Pseudo Maximum Likelihood Estimator 
+Description: Can be used to estimate gravity models using the glm function of stats with the quasipoisson distribution, a log-link and heteroskedasticity robust standard errors. The robust standard errors are calculated with the sandwich and coeftest package. 
 Author: Lukas Kleinheinz [aut, cre]
 Maintainer: Lukas Kleinheinz <lukas.kleinheinzk@student.uibk.ac.at>
 License: GPL-2 | GPL-3
+
 

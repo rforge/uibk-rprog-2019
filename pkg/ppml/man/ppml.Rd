@@ -1,11 +1,27 @@
 \name{ppml}
 \alias{ppml}
 
-\title{ppml}
+\title{Poisson Pseudo Maximum Likelihood Estimator}
 
 \encoding{latin1}
 
 \description{
+
+Can be used to estimate gravity models using \code{\link[stats]{glm}} with the quasipoisson distribution, a log-link and heteroskedasticity robust standard errors.
+
+}
+
+\usage{
+ppml(formula = formula, data = data, ...)
+}
+
+\arguments{
+  \item{formula}{An expression of the form \eqn{y \tilde model}}
+  \item{data}{Data containing the variables of interest}
+  \item{\dots}{Currently not used.}
+}
+
+\details{
 
 The maximum likelihood estimator for the Poisson distribution allows for consistent estimates provided that the conditional mean is correctly specified. Consistency requires the score vector to have expected value zero:
 \deqn{
@@ -55,46 +71,50 @@ The predicted total trade flows between i and j when a dummy is true equals the 
 Another advantage of using \code{ppml} compared to the estimation of log-linearized gravity models via OLS is its ability to handle zero trade flows. As \eqn{\ln{0}} is not defined, the respective observations will be dropped. This loss of information can be avoided by estimating the multiplicative model via \code{ppml}.
 
 }
-
-\usage{
-ppml(formula = formula, data = data, robust = TRUE, ...)
-}
-
-\arguments{
-  \item{formula}{An expression of the form \eqn{y \tilde model}}
-  \item{data}{Data containing the variables of interest}
-  \item{robust}{If \code{robust=TRUE} the heteroskedasticity-consistent estimation of the covariance matrix from the \sQuote{sandwich} package (HC1) will be used.}
-  \item{\dots}{Currently not used.}
-}
-
-\details{
-  Can be used to estimate gravity models using \code{\link[stats]{glm}} with the quasipoisson distribution and a log-link.
-}
   
   
 \value{
 
- A list with class attribute \code{\link[stats]{summary.glm}} holding the
+ A list with class attribute \code{\link[stats]{glm}} and \code{ppml} holding the
   following elements:\cr
   
-  \item{call}{}
-  \item{terms}{}
+  \item{coefficients}{}
+  \item{residuals}{}
+  \item{fitted.values}{}
+  \item{effects}{}
+  \item{R}{}
+  \item{rank}{}
+  \item{qr}{}
   \item{family}{}
-  \item{deviance}{}
-  \item{aic}{}
-  \item{contrasts}{}
-  \item{df.residual}{}
-  \item{null.deviance}{}
-  \item{df.null}{} 
+  \item{linear.predictors}{} 
+  \item{deviance}{} 
+  \item{aic}{} 
+  \item{null.deviance}{} 
   \item{iter}{} 
-  \item{deviance.resid}{} 
-  \item{coefficients}{} 
-  \item{aliased}{} 
-  \item{dispersion}{} 
-  \item{df}{} 
-  \item{cov.unscaled}{} 
-  \item{cov.scaled}{} 
-  \item{attr}{} 
+  \item{weights}{} 
+  \item{prior.weights}{} 
+  \item{df.residual}{} 
+  \item{df.null}{} 
+  \item{y}{} 
+  \item{converged}{} 
+  \item{boundary}{} 
+  \item{model}{} 
+  \item{call}{} 
+  \item{formula}{} 
+  \item{terms}{}
+  \item{data}{} 
+  \item{offset}{} 
+  \item{control}{} 
+  \item{method}{} 
+  \item{contrasts}{} 
+  \item{xlevels}{} 
+  
+  
+  See \code{\link[stats]{glm}} for more information for the elements. 
+}
+
+\seealso{
+\code{\link{glm}}
 }
 
 \author{Lukas Kleinheinz}
@@ -113,20 +133,13 @@ ppml(formula = formula, data = data, robust = TRUE, ...)
 ## load data of package
 data("TradeFlows", package = "ppml")
 
-## gravity model without robust standard errors 
+## gravity model with robust standard errors 
 model <- ppml(formula = s ~ log_dist + contig + comlang_off + 
                 colony + smctry + i_j + log_stri_i_j
-              + rta + i + j, data = TradeFlows, robust = FALSE)
+              + rta + i + j, data = TradeFlows)
               
-print(model)
-
-
-## gravity model with robust standard errors 
-model_robust <- ppml(formula = s ~ log_dist + contig + comlang_off + 
-                       colony + smctry + i_j + log_stri_i_j
-                     + rta + i + j, data = TradeFlows, robust = TRUE)
-
-print(model_robust)
+## summary of the model
+summary(model)
 
 }
 
