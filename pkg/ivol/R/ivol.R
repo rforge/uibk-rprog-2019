@@ -1,5 +1,15 @@
-imom <- function(data, use_names=TRUE, moneyness){
-  mn <- moneyness/100 - 1
+imom <- function(data, use_names=TRUE, moneyness=NA){
+  if(use_names == T){
+    mn <- colnames(data)
+    mn <- gsub("[^0-9.]", "",  mn)
+    mn <- as.numeric(mn)
+  } else {
+    mn <- moneyness
+  }
+  if(min(mn) > 10){
+    mn <- mn/100 
+  }
+  mn <- mn - 1
   df <- as.matrix(data)
   ret <- list()
   r2 <- r <- c()
@@ -16,6 +26,7 @@ imom <- function(data, use_names=TRUE, moneyness){
     mom[i,] <- mdl$coefficients
     r <- c(r, mdl$residuals)
   }
+  rownames(mom) <- rownames(data)
   ret$r.squared <- r2
   ret$mom <- mom
   ret$residuals <- r
@@ -25,8 +36,14 @@ imom <- function(data, use_names=TRUE, moneyness){
   return(ret)
 }
 
-ihurst <- function(data, maturities){
-  tau <- maturities
+ihurst <- function(data, use_names=TRUE, maturities=NA){
+  if(use_names == T){
+    tau <- colnames(data)
+    tau <- gsub("[^0-9.]", "",  tau)
+    tau <- as.numeric(tau)
+  } else {
+    tau <- maturities
+  }
   df <- log(as.matrix(data))
   ret <- list()
   h <- sigma <- r2 <- r <- c()
@@ -79,37 +96,42 @@ summary.ivol <- function(object, ...){
   round(qq, 3)
 }
 
-
-
 plot.ivol <- function(x, ...){
   if(x$method == "h_lm"){
-    par(mfrow=c(2, 1))
-    plot(x$h, type='l', ylab = "implied Hurst", xlab = "time", ylim=c(0,1))
+    plot(x$sigma_f, type='l', ylab = "fVola", xlab = "time", ylim=c(0, max(x$sigma_f)*1.05), main = "fractal Volatility")
+    plot(x$h, type='l', ylab = "iH", xlab = "time", ylim=c(0,1), main = "implied Hurst")
     abline(0.5, 0)
-    plot(x$sigma_f, type='l', ylab = "fractal Volatility", xlab = "time", ylim=c(0, max(x$sigma_f)*1.05))
-    par(mfrow=c(1, 1))
+    cat("\n2 Plots were generated.")
+  } else {
+    des <- c("Volatility", "Skewness", "Kurtosis")
+    for(i in 1:3){
+      plot(x$mom[,i], type='l', ylab = des[i], xlab = "time", main = paste("Moment", i+1))
+      abline(0, 0)
+    }
+    cat("\n3 Plots were generated.")
   }
 }
 
-
-predict.ivol <- function(object, newdata, horizon, ...){
-  z <- object
-  if(missing(horizon) || is.null(horizon)){
-    hz <- names(z$last_mdl)
-    hz <- as.numeric(gsub("T", "", hz))
-  } else {
-    hz <- horizon
-  }
-  
-  if(missing(newdata) || is.null(newdata)){
-    y <- exp(z$last_mdl[1]) 
-    h <- z$h[length(z$h)]
-  } else {
-    y <-  newdata[1]
-    h <- newdata[2]
-  }
-  pr <- y * hz^(h-0.5)
-  names(pr) <- hz
-  pr
-}
+#  Predict method not implemented yet, requires further research
+# 
+# predict.ivol <- function(object, newdata, horizon, ...){
+#   z <- object
+#   if(missing(horizon) || is.null(horizon)){
+#     hz <- names(z$last_mdl)
+#     hz <- as.numeric(gsub("T", "", hz))
+#   } else {
+#     hz <- horizon
+#   }
+#   
+#   if(missing(newdata) || is.null(newdata)){
+#     y <- exp(z$last_mdl[1]) 
+#     h <- z$h[length(z$h)]
+#   } else {
+#     y <-  newdata[1]
+#     h <- newdata[2]
+#   }
+#   pr <- y * hz^(h-0.5)
+#   names(pr) <- hz
+#   pr
+# }
 

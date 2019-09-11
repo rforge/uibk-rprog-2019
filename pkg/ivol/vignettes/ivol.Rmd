@@ -37,8 +37,13 @@ If the input data is in form of a time-series, the function runs the regression 
 
 #### *Example*
 
-```{r setup}
+```{r}
 # library(ivol)
+# data(otm)
+# x <- imom(otm)
+# plot(x)
+# x$mom
+
 ```
 
 
@@ -57,10 +62,17 @@ with $\sigma_f$ as the fractal volatility and $H$ as the implied Hurst exponent.
 
 #### *Example*
 
+```{r}
+# library(ivol)
+# data(atm)
+# x <- ihurst(atm)
+# plot(x)
+# x$h
+```
 
 
 ## References
-Jarrow and Rudd [1982], 
+Jarrow, R. and Rudd, A. [1982], 'Approximate option valuation for arbitrary stochastic processes', *Journal of Financial Economics*, **10**(3), 347-369
 
-Hu and Oksendal [2003], 
+Hu, Y. and Oksendal, B. [2003], 'Fractional White Noise Calculus and Applications to Finance', *Infinite Dimensional Analysis, Quantum Probability and Related Topics*, **6**(1), 1-32
 
