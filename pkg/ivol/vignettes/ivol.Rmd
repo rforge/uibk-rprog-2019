@@ -38,11 +38,11 @@ If the input data is in form of a time-series, the function runs the regression 
 #### *Example*
 
 ```{r}
-# library(ivol)
-# data(otm)
-# x <- imom(otm)
-# plot(x)
-# x$mom
+library(ivol)
+data(otm)
+x <- imom(otm)
+plot(x)
+x$mom
 
 ```
 
@@ -63,11 +63,11 @@ with $\sigma_f$ as the fractal volatility and $H$ as the implied Hurst exponent.
 #### *Example*
 
 ```{r}
-# library(ivol)
-# data(atm)
-# x <- ihurst(atm)
-# plot(x)
-# x$h
+library(ivol)
+data(atm)
+x <- ihurst(atm)
+plot(x)
+x$h
 ```
 
 

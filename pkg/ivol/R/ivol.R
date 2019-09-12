@@ -1,94 +1,80 @@
-imom <- function(data, use_names=TRUE, moneyness=NA){
-  if(use_names == T){
-    mn <- colnames(data)
-    mn <- gsub("[^0-9.]", "",  mn)
-    mn <- as.numeric(mn)
-  } else {
-    mn <- moneyness
-  }
-  if(min(mn) > 10){
-    mn <- mn/100 
-  }
+imom <- function(data, moneyness=NULL){
+  if(is.null(moneyness)) moneyness <- colnames(data)
+  if(is.character(moneyness)){
+    moneyness <- gsub("[^0-9.]", "",  moneyness)
+    moneyness <- as.numeric(moneyness)
+  } 
+  if(!is.numeric(moneyness)) stop("unknown specification of 'moneyness'")
+  mn <- moneyness
+  
+  if(min(mn) > 10)  mn <- mn/100 
   mn <- mn - 1
   df <- as.matrix(data)
   ret <- list()
-  r2 <- r <- c()
-  nn <- nrow(df)
-  mom <- matrix(NA, nn, 3)
-  colnames(mom) <- c("sigma", "skew", "kurt")
   x <- cbind(1, mn, mn^2)
-  for(i in 1:nn){
-    y <- df[i,]
-    mdl <- lm.fit(x, y)
-    f <- mdl$fitted.values
-    m <- mean(y)
-    r2[i] <- sum((f - m)^2) / sum((y -m)^2)
-    mom[i,] <- mdl$coefficients
-    r <- c(r, mdl$residuals)
-  }
-  rownames(mom) <- rownames(data)
-  ret$r.squared <- r2
-  ret$mom <- mom
-  ret$residuals <- r
-  ret$method <- "mom_gramchalier"
-  ret$last_mdl <- mdl$fitted.values
-  class(ret) <- "ivol"
+  mdl <- lm.fit(x, t(df))
+  co <- t(mdl$coefficients)
+  colnames(co) <- c("iVol", "iSkew", "iKurt")
+  f <- t(mdl$fitted.values)
+  m <- colMeans(df)
+  ss_tot <- rowSums((df-m)^2)
+  ss_res <- rowSums((f - df)^2)
+  r2 <- 1 - ss_res/ss_tot
+  co <- cbind(co, r2)
+
+  ret$coefficients <- co
+  ret$residuals <- mdl$residuals
+  ret$method <- "gramchalier"
+  ret$fitted.values <- mdl$fitted.values
+  ret$call <- match.call()
+  class(ret) <- c("imom", "ivol")
   return(ret)
 }
 
-ihurst <- function(data, use_names=TRUE, maturities=NA){
-  if(use_names == T){
-    tau <- colnames(data)
-    tau <- gsub("[^0-9.]", "",  tau)
-    tau <- as.numeric(tau)
-  } else {
-    tau <- maturities
-  }
+ihurst <- function(data, maturities=NULL){
+  if(is.null(maturities)) maturities <- colnames(data)
+  if(is.character(maturities)){ 
+    maturities <- gsub("[^0-9.]", "",  maturities)
+    maturities <- as.numeric(maturities)
+  } 
+  if(!is.numeric(maturities)) stop("unknown specification of 'maturities'")
+  tau <- maturities
+  
   df <- log(as.matrix(data))
   ret <- list()
-  h <- sigma <- r2 <- r <- c()
   x <- cbind(1, log(tau))
-  df <- as.matrix(df)
-  for(i in 1:nrow(df)){
-    y <- df[i,]
-    mdl <- lm.fit(x, y)
-    f <- mdl$fitted.values
-    m <- mean(y)
-    r2[i] <- sum((f - m)^2) / sum((y -m)^2)
-    h[i] <- mdl$coefficients[2] + 0.5
-    sigma[i] <- exp(mdl$coefficients[1])
-    # hier kann evt runtime verbessert werden:
-    r <- c(r, mdl$residuals)
-  }
-  ret$r.squared <- r2
-  ret$h <- h
-  ret$sigma_f <- sigma
-  ret$residuals <- r
-  ret$method <- "h_lm"
-  ret$last_mdl <- mdl$fitted.values
-  class(ret) <- "ivol"
+  mdl <- lm.fit(x, t(df))
+  co <-t(mdl$coefficients)
+  colnames(co) <- c("fVola", "iHurst")
+  co[,1] <- exp(co[,1])
+  co[,2] <- 0.5 + co[,2]
+  f <- t(mdl$fitted.values)
+  m <- colMeans(df)
+  ss_tot <- rowSums((df-m)^2)
+  ss_res <- rowSums((f - df)^2)
+  r2 <- 1 - ss_res/ss_tot
+  co <- cbind(co, r2)
+  
+  ret$coefficients <- co
+  ret$residuals <- mdl$residuals
+  ret$method <- "hu_oskendal"
+  ret$fitted.values <- mdl$fitted.values
+  ret$call <- match.call()
+  class(ret) <-  c("ihurst", "ivol")
   return(ret)
 }
 
-summary.ivol <- function(object, ...){
-  z <- object
-  r2 <- z$r.squared
-  r <- z$residuals
-  met <- z$method
-  z$r.squared <- z$residuals <- z$method <- NULL
-  qq <- quantile(r2, c(0, 0.25, 0.5, 0.75, 1))
-  rr <- quantile(r, c(0, 0.25, 0.5, 0.75, 1))
+summary.ivol <- function(x, ...){
+  qq <- quantile(x$coefficients[,"r2"], c(0, 0.25, 0.5, 0.75, 1))
+  rr <- quantile(x$residuals, c(0, 0.25, 0.5, 0.75, 1))
   names(qq) <- names(rr) <- c("Min", "1Q", "Median", "3Q", "Max")
-  m <- sapply(z, mean)
-  s <- sapply(z, sd)
+  m <- colMeans(x$coefficients)
+  s <- apply(x$coefficients, 2, sd)
   ss <- round(cbind(m, s), 3)
   colnames(ss) <- c("avg.", "sd.")
   
-  if(met == "h_lm"){
-    cat("\nCall:\nimplied Hurst time series: lm approach\n\nCoefficients: \n")
-  } else {
-    cat("\nCall:\nimplied Moments time series: quadratic approach\n\nCoefficients: \n")
-  }
+  if(class(x)[1] == "ihurst") k <- "Hurst" else k <- "Moments"
+  cat(paste("\nCall:\nimplied", k, "time series | Approach:", x$method, "\n\nCoefficients: \n"))
   print(ss)
   cat("\nResiduals:\n")
   print(round(rr, 3))
@@ -97,41 +83,26 @@ summary.ivol <- function(object, ...){
 }
 
 plot.ivol <- function(x, ...){
-  if(x$method == "h_lm"){
-    plot(x$sigma_f, type='l', ylab = "fVola", xlab = "time", ylim=c(0, max(x$sigma_f)*1.05), main = "fractal Volatility")
-    plot(x$h, type='l', ylab = "iH", xlab = "time", ylim=c(0,1), main = "implied Hurst")
+  df <- x$coefficients
+  t <- as.Date(rownames(df))
+  if(class(x)[1] == "ihurst"){
+    plot(t, df[,3], type="l", ylab = "R.2", xlab = "time", ylim=c(0,1), main = "Goodness of Fit")
+    plot(t, df[,1], type='l', ylab = "fVola", xlab = "time", ylim=c(0, max(df[,1])*1.05), main = "fractal Volatility")
+    plot(t, df[,2], type='l', ylab = "iH", xlab = "time", ylim=c(0,1), main = "implied Hurst")
     abline(0.5, 0)
-    cat("\n2 Plots were generated.")
+    cat("\ngenerated 3 plots")
   } else {
-    des <- c("Volatility", "Skewness", "Kurtosis")
-    for(i in 1:3){
-      plot(x$mom[,i], type='l', ylab = des[i], xlab = "time", main = paste("Moment", i+1))
-      abline(0, 0)
-    }
-    cat("\n3 Plots were generated.")
+    plot(t, df[,4], type="l", ylab = "R.2", xlab = "time", ylim=c(0,1), main = "Goodness of Fit")
+    plot(t, df[,1], type="l", ylab = "iVol", xlab = "time", main = "implied Vola")
+    plot(t, df[,2], type="l", ylab = "iSkew", xlab = "time", main = "implied Skew"); abline(0,0)
+    plot(t, df[,3], type="l", ylab = "iKurt", xlab = "time", main = "implied Kurt"); abline(0,0)
+    cat("\ngenerated 4 plots")
   }
 }
 
-#  Predict method not implemented yet, requires further research
-# 
-# predict.ivol <- function(object, newdata, horizon, ...){
-#   z <- object
-#   if(missing(horizon) || is.null(horizon)){
-#     hz <- names(z$last_mdl)
-#     hz <- as.numeric(gsub("T", "", hz))
-#   } else {
-#     hz <- horizon
-#   }
-#   
-#   if(missing(newdata) || is.null(newdata)){
-#     y <- exp(z$last_mdl[1]) 
-#     h <- z$h[length(z$h)]
-#   } else {
-#     y <-  newdata[1]
-#     h <- newdata[2]
-#   }
-#   pr <- y * hz^(h-0.5)
-#   names(pr) <- hz
-#   pr
-# }
-
+print.ivol <- function(x, ...){
+  cat("\nCall:\n")
+  print(x$call)
+  cat("\nLast Coefficients:\n")
+  tail(x$coefficients)
+}
