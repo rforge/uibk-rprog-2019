@@ -64,17 +64,17 @@ ihurst <- function(data, maturities=NULL){
   return(ret)
 }
 
-summary.ivol <- function(x, ...){
-  qq <- quantile(x$coefficients[,"r2"], c(0, 0.25, 0.5, 0.75, 1))
-  rr <- quantile(x$residuals, c(0, 0.25, 0.5, 0.75, 1))
+summary.ivol <- function(object, ...){
+  qq <- quantile(object$coefficients[,"r2"], c(0, 0.25, 0.5, 0.75, 1))
+  rr <- quantile(object$residuals, c(0, 0.25, 0.5, 0.75, 1))
   names(qq) <- names(rr) <- c("Min", "1Q", "Median", "3Q", "Max")
-  m <- colMeans(x$coefficients)
-  s <- apply(x$coefficients, 2, sd)
+  m <- colMeans(object$coefficients)
+  s <- apply(object$coefficients, 2, sd)
   ss <- round(cbind(m, s), 3)
   colnames(ss) <- c("avg.", "sd.")
   
-  if(class(x)[1] == "ihurst") k <- "Hurst" else k <- "Moments"
-  cat(paste("\nCall:\nimplied", k, "time series | Approach:", x$method, "\n\nCoefficients: \n"))
+  if(class(object)[1] == "ihurst") k <- "Hurst" else k <- "Moments"
+  cat(paste("\nCall:\nimplied", k, "time series | Approach:", object$method, "\n\nCoefficients: \n"))
   print(ss)
   cat("\nResiduals:\n")
   print(round(rr, 3))

@@ -2,9 +2,9 @@
 title: "ivol: Decomposing Implied Volatilites"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{ivol}
+  %\VignetteIndexEntry{ivol: Decomposing Implied Volatilites}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r, include = FALSE}

@@ -7,7 +7,7 @@
 \usage{imom(data, moneyness=NULL)}
 
 \arguments{
-  \item{data}{Time series of implied volatilities with columns of different moneyness. \code{data} can be of any class, as long as it is transformable to a matrix when calling \code{\link{as.matrix()}}.}
+  \item{data}{Time series of implied volatilities with columns of different moneyness. \code{data} can be of any class, as long as it is transformable to a matrix when calling \code{as.matrix()}.}
   \item{moneyness}{Degrees of moneyness (in percent) of the data columns. If not specified, moneyness is tried to be imported from \code{data}'s column names.}
 }
 
@@ -15,11 +15,12 @@
 
 \value{
 \code{imom} returns an \code{list} object of \code{\link{class}} "\code{c(imom, ivol)}". List elements are as follows:
-\item{coefficients}{a \code{data.frame} of estimated implied volatility, skewness and kurtosis.}
-\item{residuals}{the residuals, that is response minus fitted values.}
-\item{method}{underlying estimation method. Currently only "\code{mom_gramchalier}" available.}
-\item{r.squared}{vector of goodness of fit.}
-\item{call}{the matched call.}}
+\item{coefficients}{A matrix of estimated implied volatility, skewness, kurtosis plus goodness of fit (r2).}
+\item{residuals}{The residuals, that is response minus fitted values.}
+\item{method}{Underlying estimation method. Currently only "\code{gramchalier}" available.}
+\item{call}{The matched call.}
+\item{fitted.values}{Regression's fitted values}
+}
 
 \seealso{
   \code{\link{ihurst}}
@@ -31,8 +32,9 @@
 library(ivol)
 data(otm)
 x <- imom(otm)
+summary(x)
 plot(x)
-x$mom
+x$coefficients
 }
 \keyword{options, volatility}
 

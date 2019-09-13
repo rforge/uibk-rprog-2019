@@ -1,5 +1,6 @@
 importFrom("graphics", "abline", "par", "plot")
 importFrom("stats", "lm.fit", "quantile", "sd")
+importFrom("utils", "tail")
 
 export(
   "ihurst",
@@ -9,3 +10,4 @@ export(
 ## methods for ivol
 S3method("summary", "ivol")
 S3method("plot", "ivol")
+S3method("print", "ivol")
