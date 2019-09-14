@@ -14,13 +14,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package can be used upon financial data to estimate time-series of risk-neutral information embedded in option implied volatilities for underlying investment vehicles such as stocks, equity-indices or other financial assets which's stochastics can be described by Brownian motion. Generally, option implied volatilities can be decomposed over two different perspectives: 
+The package \code{ivol} can be used upon financial data to estimate time-series of risk-neutral information embedded in option implied volatilities for underlying investment vehicles such as stocks, equity-indices or other financial assets which's stochastics can be described by Brownian motion. Generally, option implied volatilities can be decomposed over two different perspectives: 
 
 1. over degrees of moneyness <font size="1"> (= different strike levels)</font> ; `imom`
     
 2. over their time-to-maturity <font size="1"> (= term structure of volatility)</font>; `ihurst` 
   
 A decomposition over moneyness allows to observe higher risk-neutral moments like investor expectations on skewness and kurtosis (see e.g. Jarrow and Rudd [1982]). In difference, an analysis of the implied volatility term structure allows to examine auto-correlation expectations, which can be interpreted as risk-neutral momentum in returns.  
+
+## About the class `ivol`
+
+This package is used to run regression analysis on option implied volatilities and create list objects of class `ivol`. List elements are `coefficients`, `residuals`, `method`, `fitted.values` and `call`. The class supports the methods `summary`, `plot` and `print`.
 
 ## imom
 
@@ -41,9 +45,8 @@ If the input data is in form of a time-series, the function runs the regression 
 library(ivol)
 data(otm)
 x <- imom(otm)
-plot(x)
-x$mom
-
+summary(x)
+head(x$coefficients)
 ```
 
 
@@ -67,9 +70,8 @@ library(ivol)
 data(atm)
 x <- ihurst(atm)
 plot(x)
-x$h
+print(x)
 ```
-
 
 ## References
 Jarrow, R. and Rudd, A. [1982], 'Approximate option valuation for arbitrary stochastic processes', *Journal of Financial Economics*, **10**(3), 347-369
