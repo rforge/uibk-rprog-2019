@@ -23,9 +23,9 @@ imom <- function(data, moneyness=NULL){
   co <- cbind(co, r2)
 
   ret$coefficients <- co
-  ret$residuals <- mdl$residuals
+  ret$residuals <- t(mdl$residuals)
   ret$method <- "gramchalier"
-  ret$fitted.values <- mdl$fitted.values
+  ret$fitted.values <- t(mdl$fitted.values)
   ret$call <- match.call()
   class(ret) <- c("imom", "ivol")
   return(ret)
@@ -40,6 +40,9 @@ ihurst <- function(data, maturities=NULL){
   if(!is.numeric(maturities)) stop("unknown specification of 'maturities'")
   tau <- maturities
   
+  # t <- NULL
+  # if(inherits(data, c("xts", "zoo"))) t <- index(data)
+  
   df <- log(as.matrix(data))
   ret <- list()
   x <- cbind(1, log(tau))
@@ -49,16 +52,25 @@ ihurst <- function(data, maturities=NULL){
   co[,1] <- exp(co[,1])
   co[,2] <- 0.5 + co[,2]
   f <- t(mdl$fitted.values)
+  res <- t(mdl$residuals)
   m <- colMeans(df)
   ss_tot <- rowSums((df-m)^2)
   ss_res <- rowSums((f - df)^2)
   r2 <- 1 - ss_res/ss_tot
   co <- cbind(co, r2)
   
+  # if(!is.null(t)){
+  #   if(inherits(data, "xts")){
+  #     co <- xts(co, t)
+  #     f <- xts(f, t)
+  #     res <- xts(res, t)
+  #   }
+  # }
+  
   ret$coefficients <- co
-  ret$residuals <- mdl$residuals
+  ret$residuals <- res
   ret$method <- "hu_oskendal"
-  ret$fitted.values <- mdl$fitted.values
+  ret$fitted.values <- f
   ret$call <- match.call()
   class(ret) <-  c("ihurst", "ivol")
   return(ret)
@@ -82,10 +94,21 @@ summary.ivol <- function(object, ...){
   round(qq, 3)
 }
 
-plot.ivol <- function(x, ...){
-  df <- x$coefficients
-  t <- as.Date(rownames(df))
-  if(class(x)[1] == "ihurst"){
+plot.ivol <- function(x, time_format = "%Y-%m-%d", ...){
+  df <- coef(x)
+  
+  t <- try(as.Date(rownames(df), time_format), silent = TRUE)
+  if(inherits(t, "try-error")) t <- 1:nrow(df)
+  
+  n <- if(inherits(x, "ihurst")) 3 else 4
+  ask <- prod(par("mfcol")) < n && dev.interactive()
+  if (ask) {
+    oask <- devAskNewPage(TRUE)
+    on.exit(devAskNewPage(oask))
+  }
+  
+  
+  if(inherits(x, "ihurst")){
     plot(t, df[,3], type="l", ylab = "R.2", xlab = "time", ylim=c(0,1), main = "Goodness of Fit")
     plot(t, df[,1], type='l', ylab = "fVola", xlab = "time", ylim=c(0, max(df[,1])*1.05), main = "fractal Volatility")
     plot(t, df[,2], type='l', ylab = "iH", xlab = "time", ylim=c(0,1), main = "implied Hurst")
@@ -103,6 +126,9 @@ plot.ivol <- function(x, ...){
 print.ivol <- function(x, ...){
   cat("\nCall:\n")
   print(x$call)
+  cat("\nMethod:\n")
+  print(x$method)
   cat("\nLast Coefficients:\n")
-  tail(x$coefficients)
+  print(tail(coef(x)))
+  invisible(x)
 }
