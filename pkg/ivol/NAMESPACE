@@ -1,6 +1,9 @@
 importFrom("graphics", "abline", "par", "plot")
-importFrom("stats", "lm.fit", "quantile", "sd")
+importFrom("stats", "lm.fit", "quantile", "sd", "coef")
 importFrom("utils", "tail")
+importFrom("grDevices", "dev.interactive", "devAskNewPage")
+importFrom("xts", "xts", "is.xts")
+importFrom("zoo", "zoo", "is.zoo", "index")
 
 export(
   "ihurst",

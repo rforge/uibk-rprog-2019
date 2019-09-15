@@ -344,7 +344,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb1-20" title="20"><span class="co">#&gt; R squared:</span></a>
 <a class="sourceLine" id="cb1-21" title="21"><span class="co">#&gt;    Min     1Q Median     3Q    Max </span></a>
 <a class="sourceLine" id="cb1-22" title="22"><span class="co">#&gt; -3.241  0.997  0.998  0.999  1.000</span></a>
-<a class="sourceLine" id="cb1-23" title="23"><span class="kw">head</span>(x<span class="op">$</span>coefficients)</a>
+<a class="sourceLine" id="cb1-23" title="23"><span class="kw">head</span>(<span class="kw">coef</span>(x))</a>
 <a class="sourceLine" id="cb1-24" title="24"><span class="co">#&gt;                iVol     iSkew      iKurt        r2</span></a>
 <a class="sourceLine" id="cb1-25" title="25"><span class="co">#&gt; 2007-12-05 23.10831 -28.27667 -0.2987013 0.9929263</span></a>
 <a class="sourceLine" id="cb1-26" title="26"><span class="co">#&gt; 2007-12-06 22.46074 -29.59333 -7.1774892 0.9949677</span></a>
@@ -375,6 +375,9 @@ print(x)
 #&gt; 
 #&gt; Call:
 #&gt; ihurst(data = atm)
+#&gt; 
+#&gt; Method:
+#&gt; [1] &quot;hu_oskendal&quot;
 #&gt; 
 #&gt; Last Coefficients:
 #&gt;               fVola    iHurst        r2

@@ -14,7 +14,7 @@
 \details{\code{imom} Estimates implied base-volatility, skewness and kurtosis. Can be used as risk-neutral moments. Methods \code{summary}, \code{plot} and \code{print} are defined for objects of class \code{ivol}.}
 
 \value{
-\code{imom} returns an \code{list} object of \code{\link{class}} "\code{c(imom, ivol)}". List elements are as follows:
+\code{imom} returns a \code{list} object of \code{\link{class}} "\code{c(imom, ivol)}". List elements are as follows:
 \item{coefficients}{A matrix of estimated implied volatility, skewness, kurtosis plus goodness of fit (r2).}
 \item{residuals}{The residuals, that is response minus fitted values.}
 \item{method}{Underlying estimation method. Currently only "\code{gramchalier}" available.}
@@ -34,7 +34,7 @@ data(otm)
 x <- imom(otm)
 summary(x)
 plot(x)
-x$coefficients
+coef(x)
 }
 \keyword{options, volatility}
 

@@ -33,7 +33,7 @@ data(atm)
 x <- ihurst(atm)
 plot(x)
 summary(x)
-x$coefficients
+coef(x)
 }
 \keyword{options, volatility}
 

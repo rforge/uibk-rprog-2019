@@ -46,7 +46,7 @@ library(ivol)
 data(otm)
 x <- imom(otm)
 summary(x)
-head(x$coefficients)
+head(coef(x))
 ```
 
 

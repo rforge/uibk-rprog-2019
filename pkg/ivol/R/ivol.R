@@ -6,9 +6,12 @@ imom <- function(data, moneyness=NULL){
   } 
   if(!is.numeric(moneyness)) stop("unknown specification of 'moneyness'")
   mn <- moneyness
-  
   if(min(mn) > 10)  mn <- mn/100 
   mn <- mn - 1
+  
+  t <- NULL
+  if(inherits(data, c("xts", "zoo"))) t <- index(data)
+  
   df <- as.matrix(data)
   ret <- list()
   x <- cbind(1, mn, mn^2)
@@ -24,8 +27,10 @@ imom <- function(data, moneyness=NULL){
 
   ret$coefficients <- co
   ret$residuals <- t(mdl$residuals)
+  ret$fitted.values <- mdl$fitted.values
+  if(!is.null(t) & is.zoo(data)) ret <- lapply(ret, function(x) zoo(x, t))
+  if(!is.null(t) & is.xts(data)) ret <- lapply(ret, function(x) xts(x, t))
   ret$method <- "gramchalier"
-  ret$fitted.values <- t(mdl$fitted.values)
   ret$call <- match.call()
   class(ret) <- c("imom", "ivol")
   return(ret)
@@ -40,8 +45,8 @@ ihurst <- function(data, maturities=NULL){
   if(!is.numeric(maturities)) stop("unknown specification of 'maturities'")
   tau <- maturities
   
-  # t <- NULL
-  # if(inherits(data, c("xts", "zoo"))) t <- index(data)
+  t <- NULL
+  if(inherits(data, c("xts", "zoo"))) t <- index(data)
   
   df <- log(as.matrix(data))
   ret <- list()
@@ -59,18 +64,12 @@ ihurst <- function(data, maturities=NULL){
   r2 <- 1 - ss_res/ss_tot
   co <- cbind(co, r2)
   
-  # if(!is.null(t)){
-  #   if(inherits(data, "xts")){
-  #     co <- xts(co, t)
-  #     f <- xts(f, t)
-  #     res <- xts(res, t)
-  #   }
-  # }
-  
   ret$coefficients <- co
   ret$residuals <- res
-  ret$method <- "hu_oskendal"
   ret$fitted.values <- f
+  if(!is.null(t) && is.zoo(data)) ret <- lapply(ret, function(x) zoo(x, t))
+  if(!is.null(t) && is.xts(data)) ret <- lapply(ret, function(x) xts(x, t))
+  ret$method <- "hu_oskendal"
   ret$call <- match.call()
   class(ret) <-  c("ihurst", "ivol")
   return(ret)
@@ -96,9 +95,12 @@ summary.ivol <- function(object, ...){
 
 plot.ivol <- function(x, time_format = "%Y-%m-%d", ...){
   df <- coef(x)
-  
-  t <- try(as.Date(rownames(df), time_format), silent = TRUE)
-  if(inherits(t, "try-error")) t <- 1:nrow(df)
+  if(inherits(df, c("xts", "zoo"))){
+    t <- index(df)
+  } else {
+    t <- try(as.Date(rownames(df), time_format), silent = TRUE)
+    if(inherits(t, "try-error")) t <- 1:nrow(df)
+  }
   
   n <- if(inherits(x, "ihurst")) 3 else 4
   ask <- prod(par("mfcol")) < n && dev.interactive()
@@ -107,20 +109,16 @@ plot.ivol <- function(x, time_format = "%Y-%m-%d", ...){
     on.exit(devAskNewPage(oask))
   }
   
+  dict <- c("implied Hurst", "fractal Volatility", "Goodness of Fit", "implied Vola", "implied Skew", "implied Kurt")
+  names(dict) <- c("iHurst", "fVola", "r2", "iVol", "iSkew", "iKurt")
+  nm <- colnames(df)
   
-  if(inherits(x, "ihurst")){
-    plot(t, df[,3], type="l", ylab = "R.2", xlab = "time", ylim=c(0,1), main = "Goodness of Fit")
-    plot(t, df[,1], type='l', ylab = "fVola", xlab = "time", ylim=c(0, max(df[,1])*1.05), main = "fractal Volatility")
-    plot(t, df[,2], type='l', ylab = "iH", xlab = "time", ylim=c(0,1), main = "implied Hurst")
-    abline(0.5, 0)
-    cat("\ngenerated 3 plots")
-  } else {
-    plot(t, df[,4], type="l", ylab = "R.2", xlab = "time", ylim=c(0,1), main = "Goodness of Fit")
-    plot(t, df[,1], type="l", ylab = "iVol", xlab = "time", main = "implied Vola")
-    plot(t, df[,2], type="l", ylab = "iSkew", xlab = "time", main = "implied Skew"); abline(0,0)
-    plot(t, df[,3], type="l", ylab = "iKurt", xlab = "time", main = "implied Kurt"); abline(0,0)
-    cat("\ngenerated 4 plots")
+  for(i in nm){
+    if(i %in% c("iHurst", "r2")) ylim <- c(0,1) else ylim <- NULL
+    plot(t, df[,i], type = 'l', xlab="time", ylab = i, ylim = ylim, main = dict[i])
+    if(i == "iHurst") abline(0.5, 0)
   }
+  cat(paste("\ngenerated", n, "plots\n"))
 }
 
 print.ivol <- function(x, ...){
