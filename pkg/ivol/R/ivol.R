@@ -28,8 +28,13 @@ imom <- function(data, moneyness=NULL){
   ret$coefficients <- co
   ret$residuals <- t(mdl$residuals)
   ret$fitted.values <- mdl$fitted.values
-  if(!is.null(t) & is.zoo(data)) ret <- lapply(ret, function(x) zoo(x, t))
-  if(!is.null(t) & is.xts(data)) ret <- lapply(ret, function(x) xts(x, t))
+  if(!is.null(t)){
+    if(is.zoo(data)){
+      ret <- lapply(ret, function(x) zoo(x, t))
+    } else if(is.xts(data)){
+      ret <- lapply(ret, function(x) xts(x, t))
+    }
+  } 
   ret$method <- "gramchalier"
   ret$call <- match.call()
   class(ret) <- c("imom", "ivol")
@@ -67,8 +72,13 @@ ihurst <- function(data, maturities=NULL){
   ret$coefficients <- co
   ret$residuals <- res
   ret$fitted.values <- f
-  if(!is.null(t) && is.zoo(data)) ret <- lapply(ret, function(x) zoo(x, t))
-  if(!is.null(t) && is.xts(data)) ret <- lapply(ret, function(x) xts(x, t))
+  if(!is.null(t)){
+    if(is.zoo(data)){
+      ret <- lapply(ret, function(x) zoo(x, t))
+    } else if(is.xts(data)){
+      ret <- lapply(ret, function(x) xts(x, t))
+    }
+  } 
   ret$method <- "hu_oskendal"
   ret$call <- match.call()
   class(ret) <-  c("ihurst", "ivol")

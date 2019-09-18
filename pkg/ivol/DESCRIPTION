@@ -1,5 +1,5 @@
 Package: ivol
-Version: 0.1-4
+Version: 0.1-5
 Date: 2019-09-12
 Title: Option-implied Informations
 Authors@R: c(person("Wolfgang", "Schadner", role=c("aut", "cre"), email="Wolfgang.Schadner@uibk.ac.at"), 
