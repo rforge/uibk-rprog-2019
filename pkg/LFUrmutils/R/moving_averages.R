@@ -44,14 +44,8 @@ est.ewma <- function(lambda, innov){
 ## Univariate volatility models ----
 ## ## ## ##
 
-UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics", "WeightedAverage", "MovingAverage"), center = FALSE){
+UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics", "WeightedAverage", "MovingAverage"), center = FALSE, exchange = "UnitedStates/NYSE"){
   # Check validity of model variant
-  
-  # "%!in%" <- Negate("%in%")
-  # if (type %!in% c("RiskMetrics", "WeightedAverage", "MovingAverage")){
-  #  stop("type must be either \"RiskMetrics\", \"WeightedAverage\" or \"MovingAverage\".")
-  #}
-  
   type <- match.arg(type, c("RiskMetrics", "WeightedAverage", "MovingAverage"))
   
   # Set lambda.se to NA
@@ -100,15 +94,16 @@ UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics",
     }
     
     # Add empty row
-    NBD <- NextBusinessDay(returns)
+    NBD <- NextBusinessDay(returns, exchange = exchange)
     newrow <- zoo(NA, NBD)
-    newindex <- merge(returns, newrow)
+    newindex <- suppressWarnings(rbind(returns, newrow))
     sigma_t2 <- zoo(sigma_t2, index(newindex))
+    names(sigma_t2) <- "Variance"
     
     # Set width to NA, whatever the original value is
     width <- NA
   }
-    
+  
   if (type == "WeightedAverage") {
     # Compute correction factor and weights
     CF <- nlambda/(lambda*(1-lambda^width))
@@ -116,12 +111,14 @@ UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics",
     lambda <- lambda^s
     
     # Compute conditional variances
-    sigma_t2 <- rollapplyr(returns^2, width = width, FUN = function(x) CF * sum(lambda * x), fill = NA)
+    sigma_t2 <- rollapplyr(returns^2, width = width, FUN = function(x) CF * sum(lambda * x), fill = NA, by.column = FALSE)
     
     # Add empty row
-    NBD <- NextBusinessDay(returns)
+    NBD <- NextBusinessDay(returns, exchange = exchange)
     newrow <- zoo(NA, NBD)
-    sigma_t2 <- suppressWarnings(rbind(sigma_t2, newrow))
+    newindex <- suppressWarnings(rbind(returns, newrow))
+    sigma_t2 <- zoo(sigma_t2, index(newindex))
+    names(sigma_t2) <- "Variance"
     
     # Lead series by one observation
     sigma_t2 <- lag(sigma_t2, -1, na.pad = TRUE)
@@ -129,13 +126,14 @@ UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics",
   
   if (type =="MovingAverage"){
     # Compute variance
-    sigma_t2 <- rollmeanr(returns^2, k = width, fill = NA)
+    sigma_t2 <- rollapplyr(returns^2, width = width, FUN = mean, fill = NA, by.column = FALSE)
     
     # Add empty row
-    NBD <- NextBusinessDay(returns)
+    NBD <- NextBusinessDay(returns, exchange = exchange)
     newrow <- zoo(NA, NBD)
-    sigma_t2 <- suppressWarnings(rbind(sigma_t2, newrow))
-    colnames(sigma_t2) <- "Variance"
+    newindex <- suppressWarnings(rbind(returns, newrow))
+    sigma_t2 <- zoo(sigma_t2, index(newindex))
+    names(sigma_t2) <- "Variance"
     
     # Lead series by one observation
     sigma_t2 <- lag(sigma_t2, -1, na.pad = TRUE)
@@ -157,7 +155,7 @@ UnivVola <- function(returns, width = 30, lambda = 0.94, type = c("RiskMetrics",
 ## Multivariate volatility models ----
 ## ## ## ##
 
-MultiEWMA <- function(returns, lambda = 0.94, center = FALSE){
+MultiEWMA <- function(returns, lambda = 0.94, center = FALSE, exchange = "UnitedStates/NYSE"){
   # Extract necessary information from the return series
   x <- coredata(returns)
   n <- dim(x)[1] + 1
@@ -212,7 +210,7 @@ MultiEWMA <- function(returns, lambda = 0.94, center = FALSE){
   SIGMA_t <- zoo(SIGMA_t, index(returns))
   
   # Create new index
-  NBD <- NextBusinessDay(returns)
+  NBD <- NextBusinessDay(returns, exchange = exchange)
   newrow <- zoo(NA, NBD)
   newindex <- rbind(returns[, 1], newrow)
   SIGMA_t <- zoo(SIGMA_t, index(newindex))
