@@ -12,7 +12,7 @@ Plot methods for multiviarate EWMA models models.
 \arguments{
   \item{x}{An object of class "\code{MultiEWMA}"}
   \item{which}{A character string denoting which plot should be displayed.}
-  \item{...}{Optional Arguments to be passted.}
+  \item{...}{Optional Arguments to be passed.}
 }
 \details{
 The generic function \code{plot} allows to display 14 graphs. These are the \cr
@@ -31,9 +31,14 @@ Conditional Variance-Covariance Matrix, \cr
 Diagonal Elements of the Conditional Variance-Covariance Matrix,\cr
 Conditional Correlations, \cr
 Snapshot of the Model\cr
+}
+
+\note{
+The cross correlation plots return only the corresponding plots for the first and second firm.
 
 The "Snapshot of the Model" plots the conditional volatilities of the first two return series, as well as their conditional covariance, and their conditional correlation. See Ruppert and Matteson (2015, p. 428 -- 443) for further details.
 }
+
 \seealso{
 \code{\link{MultiEWMA}}
 }

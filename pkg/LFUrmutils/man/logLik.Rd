@@ -22,7 +22,7 @@ These functions are based on the generic \code{logLik} method for objects of cla
 Returns an object of class \code{logLik}.
 }
 \seealso{
-\code{\link{UnivVola}}, \code{\link{MultiEWMA}}, \code{\link[fGarch:garchFit]{garchFit}}, \code{\link[fGarch:fGARCH-class]{fGARCH-class}}
+\code{\link{UnivVola}}, \code{\link{MultiEWMA}}, \code{\link[fGarch:garchFit]{garchFit}}
 }
 \references{
 Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.

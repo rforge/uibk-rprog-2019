@@ -26,7 +26,10 @@ Cross Correlation Plot between (Squared) Observations, \cr
 Standardized Residuals Plot, \cr
 ACF Plot of Standardized Residuals, \cr
 ACF Plot of Squared Standardized Residuals, \cr
-Cross Correlation Plot between (Standardized Residuals)
+Cross Correlation Plot between (Standardized Residuals), \cr
+QQ-Plot of Standardized Residuals, \cr
+Time Series Plot of the Simple Errors, \cr
+Time Series Plot of the Squared Errors \cr
 }
 \seealso{
 \code{\link{UnivVola}}
@@ -50,4 +53,4 @@ plot(ma, which = 2)
 plot(ma)
 }
 }
-\keyword{hplot}
+\keyword{plot}

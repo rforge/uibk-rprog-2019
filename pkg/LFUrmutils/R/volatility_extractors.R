@@ -26,58 +26,96 @@ vola.fGARCH <- function(object, ...){
   return(sig)
 }
 
-
 ## Multivariate EWMA model ----
-vola.MultiEWMA <- function(object, offdiagonal = FALSE, duplicates = FALSE, ...){
+vola.MultiEWMA <- function(object, ...){
   
+  # Extract variances
   sig <- object$Variances
+  
+  # Replace column name
   colnames(sig) <- sub("Sigma", "Volatility", colnames(sig))
-
+  
+  # Get dimension
   d <- as.integer(sqrt(dim(sig)[2]))
   
-  # Core of the function
+  # Compute conditional volatilities
   for (i in 1:d){
     # Adjust diagonal elements
     sig[, grep(paste0(i,i), colnames(sig))] <- sqrt(sig[, grep(paste0(i,i), colnames(sig))])
   }
   
-  if(offdiagonal == FALSE){
-    # Delete off-diagonal elements if not necessary
-      # Create sequence of 11, 22, etc.
-      diago <- seq.int(1,d) + 10L*seq.int(1,d)
-    sig <- sig[, grep(paste(diago, collapse="|"), colnames(sig))]
-  } else {
-    # Otherwise keep off-diagonal elements
-    for (i in 1:d){
-      for (j in seq.int(i,d)){
-        if (i != j){
-          # Compute volatility of off-diagonal elements (only upper elements)
-          sig[, grep(paste0(i, j), colnames(sig))] <- sig[, grep(paste0(i,j), colnames(sig))]/sqrt(sig[, grep(paste0(i,i), colnames(sig))] * sig[, grep(paste0(j,j), colnames(sig))])
-        }
-    }
-  }
-    if(duplicates == TRUE){
-      for (i in 1:d){
-        for (j in seq.int(i,d)){
-          if (i != j){
-            # Copy upper elements to lower elements
-            sig[, grep(paste0(j, i), colnames(sig))] <- sig[, grep(paste0(i, j), colnames(sig))]  
-          }
-        }
-      }
-    } else {
-      for (i in 1:d){
-        for (j in seq.int(i,d)){
-          if (i != j){
-            # Otherwise delete lower elements
-            sig <- sig[, -grep(paste0(j, i), colnames(sig))]
-          }
-        }
-      }
-    }
-  }
+  # Delete off-diagonal elements, i.e. keep only diagonal elements
+    # Create sequence of 11, 22, etc.
+    diago <- seq.int(1,d) + 10L*seq.int(1,d)
+  sig <- sig[, grep(paste(diago, collapse="|"), colnames(sig))]
+
   return(sig)
 }
+
+# ## Multivariate EWMA model ----
+#     ## -- -- -- -- --
+#     ## Important note: The computation of the off-diagonal elements is not meaningful.
+#     ## -- -- -- -- --
+#
+# vola.MultiEWMA <- function(object, offdiagonal = FALSE, duplicates = FALSE, ...){
+#   
+#   # Extract variances
+#   sig <- object$Variances
+#   
+#   # Replace column name
+#   colnames(sig) <- sub("Sigma", "Volatility", colnames(sig))
+#   
+#   # Get dimension
+#   d <- as.integer(sqrt(dim(sig)[2]))
+#   
+#   # Compute conditional volatilities
+#   for (i in 1:d){
+#     # Adjust diagonal elements
+#     sig[, grep(paste0(i,i), colnames(sig))] <- sqrt(sig[, grep(paste0(i,i), colnames(sig))])
+#   }
+#   
+#   if(offdiagonal == FALSE){
+#     # Delete off-diagonal elements if not necessary
+#       # Create sequence of 11, 22, etc.
+#       diago <- seq.int(1,d) + 10L*seq.int(1,d)
+#     sig <- sig[, grep(paste(diago, collapse="|"), colnames(sig))]
+#   } else {
+#     # Otherwise keep off-diagonal elements
+#     for (i in 1:d){
+#       for (j in seq.int(i,d)){
+#         if (i != j){
+#           # Compute volatility of off-diagonal elements (only upper elements)
+#           
+#           ## -- -- -- -- --
+#           ## Important note: Computation is wrong! (Code acutally computes conditional correlations!)
+#           ## -- -- -- -- --
+#           
+#           sig[, grep(paste0(i, j), colnames(sig))] <- sig[, grep(paste0(i,j), colnames(sig))]/sqrt(sig[, grep(paste0(i,i), colnames(sig))] * sig[, grep(paste0(j,j), colnames(sig))])
+#         }
+#     }
+#   }
+#     if(duplicates == TRUE){
+#       for (i in 1:d){
+#         for (j in seq.int(i,d)){
+#           if (i != j){
+#             # Copy upper elements to lower elements
+#             sig[, grep(paste0(j, i), colnames(sig))] <- sig[, grep(paste0(i, j), colnames(sig))]  
+#           }
+#         }
+#       }
+#     } else {
+#       for (i in 1:d){
+#         for (j in seq.int(i,d)){
+#           if (i != j){
+#             # Otherwise delete lower elements
+#             sig <- sig[, -grep(paste0(j, i), colnames(sig))]
+#           }
+#         }
+#       }
+#     }
+#   }
+#   return(sig)
+# }
 
 
 # ## OGARCH model ----

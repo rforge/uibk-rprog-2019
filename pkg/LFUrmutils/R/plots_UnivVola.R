@@ -18,9 +18,12 @@ plot.UnivVola <- function (x, which = "ask", ...){
       "Standardized Residuals", 
       "ACF of Standardized Residuals", 
       "ACF of Squared Standardized Residuals", 
-      "Cross Correlation Plot between (Squared) Residuals"
+      "Cross Correlation Plot between (Squared) Residuals",
+	    "QQ-Plot of Standardized Residuals",
+	    "Time Series Plot of the Simple Errors",
+	    "Time Series Plot of the Squared Errors"
     ), 
-    plotFUN = paste(".plot_UnivVola", 1:10, sep = "_"), 
+    plotFUN = paste(".plot_UnivVola", 1:13, sep = "_"), 
     which = which, ...)
 # Return value
 invisible(x)
@@ -88,7 +91,10 @@ invisible(x)
              .plot_UnivVola_7(object),
              .plot_UnivVola_8(object), 
              .plot_UnivVola_9(object), 
-             .plot_UnivVola_10(object))
+             .plot_UnivVola_10(object),
+      			 .plot_UnivVola_11(object), 
+      			 .plot_UnivVola_12(object), 
+      			 .plot_UnivVola_13(object))
     }
   }
 
@@ -202,4 +208,26 @@ invisible(x)
   ccf(resids2, resids, lag.max = lag.max, xlab = "Lags",
       main = "Cross Correlation", plot = TRUE, col = "steelblue", 
       na.action = na.pass)
+}
+
+# QQ-Plot of Standardized Residuals
+.plot_UnivVola_11 <- function(object, ...){
+  resids <- residuals(object)
+  qqnorm(resids); qqline(resids)
+}
+
+# Time Series Plot of Simple Errors
+.plot_UnivVola_12 <- function(object, ...){
+  cvar <- object$Variance
+  ret2 <- object$Returns^2
+  err <- cvar - ret2
+  plot(err, main = "Simple Errors")
+}
+
+# Time Series Plot of the Squared Errors
+.plot_UnivVola_13 <- function(object, ...){
+  cvar <- object$Variance
+  ret2 <- object$Returns^2
+  sqe <- (cvar - ret2)^2
+  plot(sqe, type = "l", main = "Squared errors")
 }

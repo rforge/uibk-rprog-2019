@@ -1,4 +1,5 @@
-\name{fitted.UnivVola}
+\name{fitted}
+\alias{fitted}
 \alias{fitted.UnivVola}
 \alias{fitted.MultiEWMA}
 \title{
@@ -16,17 +17,17 @@ These functions are based on the generic \code{fitted} method for objects of cla
   \item{...}{Arguments passed to methods (unused at the moment).}
 }
 \value{
-For univariate volatility models, the function extracts the conditional variances. For the multivariate EWMA model, the function extracts the conditional variance-covariance matrices. In this case, each row in the output corresponds to the complete conditional variance-vovariance matrix of the corresponding day. 
+For univariate volatility models, the function extracts the conditional variances. For the multivariate EWMA model, the function extracts the conditional variance-covariance matrices. In this case, each row in the output corresponds to the (full) conditional variance-vovariance matrix of the corresponding day. 
 }
 \note{
-For the multivariate EWMA model, we recommend that end users use the function \code{\link{varcov}}, which also allows to extract the conditional variance-covariance matrix, but provides additional arguments to control the output.
+For the multivariate EWMA model, we recommend that end users use the function \code{\link{varcov}}, which also allows to extract the full conditional variance-covariance matrix, but provides additional arguments to control the output.
 }
 \seealso{
 \code{\link{UnivVola}}, \code{\link{MultiEWMA}}, \code{\link{varcov}}.
 }
 \references{
-Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
-Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
+Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.\cr
+Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.\cr
 Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineering, 2nd. Springer. New York.
 }
 \author{

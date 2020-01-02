@@ -190,11 +190,12 @@ invisible(x)
   cols <- dim(rets)[2]
   lag.max <- as.integer(10*log10(n))
   par(mfrow = rev(n2mfrow(cols)))
-  for(i in 1:cols){
-  ccf(rets2[, i], rets[, i], lag.max = lag.max, xlab = "Lags",
-      main = "Cross Correlation", plot = TRUE, col = "steelblue", 
+  ccf(rets[, 1], rets[, 2], lag.max = lag.max, xlab = "Lags",
+      main = "Cross Correlation (returns)", plot = TRUE, col = "steelblue", 
       na.action = na.pass)
-  }
+  ccf(rets2[, 1], rets2[, 2], lag.max = lag.max, xlab = "Lags",
+      main = "Cross Correlation (squared returns)", plot = TRUE, col = "steelblue", 
+      na.action = na.pass)
   par(mfrow = c(1, 1))
 }
 
@@ -244,7 +245,7 @@ invisible(x)
   }
 }
 
-# Cross correlation between squared returns and returns
+# Cross correlation between squared residuals and residuals
 .plot_MultiEWMA_10 <- function(object, ...){
   resids <- residuals(object)
   resids2 = resids^2
@@ -252,11 +253,12 @@ invisible(x)
   cols <- dim(resids2)[2]
   lag.max <- as.integer(10*log10(n))
   par(mfrow = rev(n2mfrow(cols)))
-  for(i in 1:cols){
-  ccf(resids2[, i], resids[, i], lag.max = lag.max, xlab = "Lags",
-      main = "Cross Correlation", plot = TRUE, col = "steelblue", 
+  ccf(resids[, 1], resids[, 2], lag.max = lag.max, xlab = "Lags",
+      main = "Cross Correlation (Residuals)", plot = TRUE, col = "steelblue", 
       na.action = na.pass)
-  }
+  ccf(resids2[, 1], resids2[, 2], lag.max = lag.max, xlab = "Lags",
+      main = "Cross Correlation (Squared Residuals)", plot = TRUE, col = "steelblue", 
+      na.action = na.pass)
 }
 
 
@@ -301,7 +303,7 @@ invisible(x)
 
 # Snapshot
 .plot_MultiEWMA_14 <- function(object, ...){
-  volat <- vola(object, offdiagonal = FALSE)
+  volat <- vola(object)
   varcovs <- fitted(object)
   condcor <- ccor(object, diagonal = FALSE, duplicates = FALSE)
   

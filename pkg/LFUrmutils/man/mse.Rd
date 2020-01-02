@@ -24,7 +24,7 @@ mse(object, ...)
 MSE of the corresponding model.
 }
 \seealso{
-\code{\link{UnivVola}}, \code{\link{MultiEWMA}}, \code{\link[fGarch:garchFit]{garchFit}}, \code{\link[fGarch:fGARCH-class]{fGARCH-class}}
+\code{\link{UnivVola}}, \code{\link{MultiEWMA}}, \code{\link[fGarch:garchFit]{garchFit}}
 }
 \references{
 Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.

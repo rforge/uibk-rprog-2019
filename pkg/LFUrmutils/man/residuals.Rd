@@ -14,7 +14,7 @@ Function to compute the residuals of univariate or multivariate volatility model
 \arguments{
   \item{object}{Object of class \code{UnivVola} or \code{MultiEWMA}.}
   \item{standardize}{Should standardized residuals be computed (\code{TRUE}, the default) or not (\code{FALSE}).}
-  \item{na.action}{\code{NA} handling. See \link[=stats]{na.action} for further details.}
+  \item{na.action}{\code{NA} handling. See \link[stats]{na.action} for further details.}
   \item{...}{Arguments passed to methods.}
 }
 \details{
@@ -24,8 +24,8 @@ By default standardized residuals are computed. For comparability reasons with t
 A \code{zoo} object containing the residuals for each return series.
 }
 \references{
-Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
-Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
+Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.\cr
+Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.\cr
 Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineering, 2nd. Springer. New York.
 }
 \author{

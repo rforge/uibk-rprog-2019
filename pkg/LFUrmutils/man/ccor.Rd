@@ -26,8 +26,8 @@ Note that the function is currently only implemented for objects of class \code{
 \item{rho }{A \code{zoo} object containing the conditional correlations between the volatilities of the corresponding assets. Each row of the output object represents the correlation matrix (or elements thereof) of the corresponding day.}
 }
 \references{
-Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.
-Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.
+Danielsson (2011). Financial Risk Forecasting. Wiley. Chichester.\cr
+Jorion (2007). Value at Risk, 3rd. McGraw-Hill. New York.\cr
 Ruppert and Matteson (2015). Statistics and Data Analysis for Financial Engineering, 2nd. Springer. New York.
 }
 \author{
